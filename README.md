@@ -23,11 +23,11 @@ been removed so you can safely clone it, study it and build your own project.
 
 ## 👨‍💻 Developed by
 
-**Thy Muoyhak** — aka **HakSimpleDev**
+**Thy Muoyhak** — **HakSimpleDev**
 
 | | |
 |---|---|
-| 💬 Telegram | [t.me/your_telegram](https://t.me/your_telegram) |
+| 💬 Telegram | [t.me/your_telegram](https://t.me/thymuoyhak) |
 | 🐙 GitHub | [github.com/ThyMuoyhak](https://github.com/ThyMuoyhak) |
 | 🎓 Purpose | Learn, strengthen skills, and build a portfolio with a production-grade full-stack project |
 
@@ -729,7 +729,7 @@ No warranty is provided — use at your own risk.
 ## 🙏 Support the project
 
 - ⭐ Star this repo and share it with other learners
-- 💬 Questions / ideas → Telegram [t.me/your_telegram](https://t.me/your_telegram)
+- 💬 Questions / ideas → Telegram [t.me/thymuoyhak](https://t.me/thymuoyhak)
 - 🌍 Live demo → **https://minishopcambodia.store** · **https://minishopcambodia.store/demo**
 
 **Happy building! 🚀**
