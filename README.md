@@ -717,26 +717,6 @@ The project is a **solid foundation**, not a finished product — here are great
 - **PDF quality:** install Edge/Chromium on the server and set `EDGE_PATH`/`CHROME_PATH`
   for full-quality bilingual invoices (reportlab is the automatic fallback).
 
----
-
-## 🔒 Security & privacy (this repository)
-
-This public repository contains **code only**. The following were intentionally removed/scrubbed:
-
-- ❌ Databases (`*.db`, `data/`) — no customer/order/user data
-- ❌ `uploads/`, `backups/` — no real images, receipts, QR codes or exports
-- ❌ `node_modules/`, `build/`, `venv/` — install dependencies yourself
-- ❌ Real admin password, admin email, personal Telegram handle and production URLs —
-  replaced with safe placeholders loaded from environment variables
-- ✅ `.env` files are git-ignored — never commit real credentials
-
-**Best practices for your own project:**
-- Always store secrets in environment variables, never in code
-- Change `MINISHOP_SECRET_KEY` and admin passwords before going live
-- Keep `UPLOAD_DIR`/`DATA_DIR`/`BACKUP_DIR` on a persistent disk in production
-- Enable HTTPS on the backend and set a strict `CORS_ORIGINS` allow-list
-
----
 
 ## 📜 License
 
