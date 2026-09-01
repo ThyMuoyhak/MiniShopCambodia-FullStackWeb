@@ -713,7 +713,7 @@ We welcome contributions! Please follow these steps:
 ```
 MIT License
 
-Copyright (c) 2024 Thy Muoyhak (HakSimpleDev)
+Copyright (c) 2026 Thy Muoyhak (HakSimpleDev)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
