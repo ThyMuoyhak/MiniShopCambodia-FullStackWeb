@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="km">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="description" content="Mini Shop - multi-shop e-commerce platform" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <title>Mini Shop</title>
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/minishop.png" data-default="true" />
+    <script>
+      // Anti-inspect deterrent (console suppression + shortcut/context-menu blocking).
+      // NOTE: deliberately does NOT blank the page — that caused white screens.
+      (function () {
+        document.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
+        document.addEventListener('keydown', function (e) {
+          var k = (e.key || '').toUpperCase();
+          if (e.key === 'F12' ||
+              (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'K'].indexOf(k) !== -1) ||
+              (e.ctrlKey && k === 'U') || (e.ctrlKey && k === 'S')) {
+            e.preventDefault(); e.stopPropagation(); return false;
+          }
+        }, true);
+        ['log', 'warn', 'info', 'debug', 'error', 'trace', 'table'].forEach(function (m) {
+          try { window.console[m] = function () {}; } catch (e) {}
+        });
+        try { console.clear(); } catch (e) {}
+        setInterval(function () { try { console.clear(); } catch (e) {} }, 2000);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+# --- Safety net: never commit runtime data, secrets or build artifacts ---
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Runtime data
+data/
+uploads/
+backups/
+*.db
+*.sqlite
+*.sqlite3
+
+# Node / builds
+node_modules/
+build/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db

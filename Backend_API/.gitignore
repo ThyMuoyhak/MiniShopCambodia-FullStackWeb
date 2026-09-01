@@ -1,0 +1,24 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Runtime data — never push databases, uploads or backups
+data/
+uploads/
+backups/
+*.db
+
+# Logs
+*.log
+
+# Local environment / secrets
+.env
+
+# Test artifacts
+khmer_sample.pdf
+
+# misc
+.DS_Store
+Thumbs.db

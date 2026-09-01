@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <!-- Mini Shop logo mark: navy rounded square, white shopping bag, orange dot badge -->
+  <rect width="120" height="120" rx="28" fill="#011F46"/>
+  <path d="M42 48v-8a18 18 0 0 1 36 0v8" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+  <path d="M26 50h68l-6 42a10 10 0 0 1-10 9H42a10 10 0 0 1-10-9z" fill="#ffffff"/>
+  <circle cx="60" cy="66" r="7" fill="#FB6E08"/>
+  <circle cx="96" cy="24" r="14" fill="#FB6E08" stroke="#ffffff" stroke-width="4"/>
+</svg>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="description" content="Mini Shop - Shop Owner Dashboard" />
+    <title>Mini Shop Dashboard</title>
+    <script>
+      // Anti-inspect deterrent (console suppression + shortcut/context-menu blocking).
+      // NOTE: deliberately does NOT blank the page — that caused white screens.
+      (function () {
+        document.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
+        document.addEventListener('keydown', function (e) {
+          var k = (e.key || '').toUpperCase();
+          if (e.key === 'F12' ||
+              (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'K'].indexOf(k) !== -1) ||
+              (e.ctrlKey && k === 'U') || (e.ctrlKey && k === 'S')) {
+            e.preventDefault(); e.stopPropagation(); return false;
+          }
+        }, true);
+        ['log', 'warn', 'info', 'debug', 'error', 'trace', 'table'].forEach(function (m) {
+          try { window.console[m] = function () {}; } catch (e) {}
+        });
+        try { console.clear(); } catch (e) {}
+        setInterval(function () { try { console.clear(); } catch (e) {} }, 2000);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
