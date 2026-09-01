@@ -84,7 +84,7 @@ This project is published with one clear goal:
 ### Reporting Vulnerabilities
 If you discover a security vulnerability, please **DO NOT** open a public issue. Instead:
 
-1. **Email**: [your-email@example.com]
+1. **Email**: [thymuoyhak.biu@gmail.com]
 2. **Telegram**: [t.me/thymuoyhak](https://t.me/thymuoyhak)
 
 You will receive a response within **48 hours**, and we will work with you to patch the issue.
