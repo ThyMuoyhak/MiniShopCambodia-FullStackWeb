@@ -58,12 +58,6 @@ class ShopTheme {
             dark ? const Color(0xFF0F1115) : Colors.white,
         foregroundColor: dark ? Colors.white : const Color(0xFF1F2430),
       ),
-      cardTheme: const CardThemeData(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-        ),
-      ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           backgroundColor: primary,

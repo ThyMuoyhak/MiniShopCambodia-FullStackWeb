@@ -6,7 +6,6 @@ import '../models/order.dart';
 import '../providers/customer_provider.dart';
 import '../providers/shop_provider.dart';
 import '../services/customer_service.dart';
-import '../services/order_service.dart';
 import '../widgets/loading_view.dart';
 import 'customer_auth_screen.dart';
 
@@ -20,7 +19,6 @@ class MyOrdersScreen extends StatefulWidget {
 
 class _MyOrdersScreenState extends State<MyOrdersScreen> {
   final CustomerService _customerService = CustomerService();
-  final OrderService _orderService = OrderService();
   List<Order> _orders = [];
   bool _loading = false;
   String? _error;

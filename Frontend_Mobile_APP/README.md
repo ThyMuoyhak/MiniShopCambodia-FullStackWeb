@@ -32,7 +32,7 @@ flutter run --dart-define=API_URL=https://api.yourbackend.com
 ```
 
 ### Requirements
-- Flutter SDK **3.10+** (https://docs.flutter.dev/get-started/install)
+- Flutter SDK **3.27+** (https://docs.flutter.dev/get-started/install)
 - The backend running on port `8000` (see the root README)
 
 ## 🧩 Structure
