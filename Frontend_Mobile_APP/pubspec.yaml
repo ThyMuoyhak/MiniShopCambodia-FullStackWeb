@@ -1,0 +1,29 @@
+name: frontend_mobile_app
+description: MiniShop Cambodia — mobile storefront (customer app) for the FastAPI backend.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Networking
+  http: ^1.2.0
+  # State management
+  provider: ^6.1.1
+  # Local storage (auth token)
+  shared_preferences: ^2.2.2
+  # Open ABA Pay checkout URL in browser
+  url_launcher: ^6.2.4
+  # Currency / date formatting
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true

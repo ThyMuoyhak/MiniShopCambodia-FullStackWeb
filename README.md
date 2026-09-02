@@ -1,7 +1,7 @@
 # 🛍️ MiniShop — Multi-Store E-Commerce Platform
 
 > A complete **multi-tenant e-commerce platform** where every shop gets its own storefront, dashboard, POS, **ABA Pay (KHQR)** checkout, PDF invoices, Telegram notifications and **reseller commissions**.
-> Built with **FastAPI + React (5 apps)** and a **free 1-month Starter plan** for new shops.
+> Built with **FastAPI + React (5 web apps) + Flutter (mobile app)** and a **free 1-month Starter plan** for new shops.
 
 **This repository is 100% code** — all data, databases, uploads, backups and production secrets have been removed so you can safely clone it, study it and build your own project.
 
@@ -14,6 +14,7 @@
 - [Security Policy](#-security-policy)
 - [Features](#-features-at-a-glance)
 - [Tech Stack](#-tech-stack)
+- [Mobile App (Flutter)](#-mobile-app-flutter)
 - [Architecture](#-architecture)
 - [Data Model](#-data-model)
 - [Core Flows](#-core-flows)
@@ -131,6 +132,7 @@ You will receive a response within **48 hours**, and we will work with you to pa
 | 🔐 **Secure login** | bcrypt + JWT, role-based access, **failed-attempt lockout** (3 wrong → locked, escalating 5/10/15 min) |
 | 🌐 **Bilingual** | Full Khmer (ភាសាខ្មែរ) + English UI, `Asia/Phnom_Penh` timezone |
 | 🌗 **Dark / Light mode** | Every shop storefront supports both themes |
+| 📱 **Mobile app** | **Flutter** storefront (`Frontend_Mobile_APP`) — browse shops, cart, checkout, ABA Pay, customer login — same FastAPI backend |
 | 📊 **Dashboards** | Admin (6 charts), shop owner, and reseller dashboards with real data |
 
 ---
@@ -141,6 +143,7 @@ You will receive a response within **48 hours**, and we will work with you to pa
 |---|---|
 | Backend | Python 3.10+ · **FastAPI** · SQLAlchemy · SQLite (dev) / PostgreSQL (prod) · Uvicorn |
 | Frontends | **React 18 (Create React App)** · Tailwind CSS · react-router-dom · recharts · chart.js |
+| Mobile | **Flutter** (Dart) · Provider · http · shared_preferences · url_launcher |
 | Auth | bcrypt · PyJWT (JWT bearer tokens) · role guards + failed-login lockout |
 | Payments | **ABA Pay (KHQR)** — PayWay gateway (sandbox + live) |
 | PDF | reportlab + optional headless Edge/Chromium for high-quality HTML invoices |
@@ -342,6 +345,27 @@ flowchart LR
 
 ---
 
+## 📱 Mobile App (Flutter)
+
+A new **Flutter storefront** (`Frontend_Mobile_APP/`) that mirrors `Frontend_User`
+and uses the **same FastAPI backend**:
+
+- 🔍 Open any shop by username, shop home with theme colors
+- 🗂️ Categories, product grid, product detail (gallery, variations, quantity)
+- 🧺 Cart + **ABA Pay (KHQR)** checkout (create → open → verify polling)
+- 👤 Customer signup / signin (JWT), My Orders, track order
+- 🚀 **Create your own shop** right from the phone (FREE starter plan)
+
+```bash
+cd Frontend_Mobile_APP
+flutter pub get
+flutter run --dart-define=API_URL=http://10.0.2.2:8000
+```
+
+> Full details in [`Frontend_Mobile_APP/README.md`](Frontend_Mobile_APP/README.md).
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -393,9 +417,19 @@ MiniShopCambodia-FullStackWeb
 │                                 # Customers, Reports, Receipts, PaymentSettings,
 │                                 # TelegramSettings, UpgradePlan, Backup, ShopSettings
 │
-└── Frontend_Reseller/            # 💸 Reseller dashboard (port 3005)
-    └── src/pages/                # Dashboard (charts), Shops, Commissions, Promo,
-                                  # Backup, Settings
+├── Frontend_Reseller/            # 💸 Reseller dashboard (port 3005)
+│   └── src/pages/                # Dashboard (charts), Shops, Commissions, Promo,
+│                                 # Backup, Settings
+│
+└── Frontend_Mobile_APP/          # 📱 Flutter storefront (Android / iOS)
+    └── lib/
+        ├── main.dart             # App entry + theme wiring
+        ├── models/               # Shop, Product, Category, Customer, Order, Plan
+        ├── services/             # ApiClient + shop/product/customer/order services
+        ├── providers/            # Shop, Cart, Customer, Theme state
+        ├── screens/              # Home, ShopHome, Products, ProductDetail, Cart,
+        │                         # Checkout, OrderSuccess, MyOrders, Auth, Profile, CreateShop
+        └── widgets/              # ProductCard, CategoryChip, ShopHeader, QtyStepper
 ```
 
 ---
@@ -552,92 +586,145 @@ All endpoints are grouped by area. Interactive docs: **http://localhost:8000/doc
 | GET | `/auth/users` | 👨‍💼 | List platform users |
 | PUT | `/auth/users/{user_id}` | 👨‍💼 | Edit user (role, commission, status) |
 | DELETE | `/auth/users/{user_id}` | 👨‍💼 | Delete user |
+| POST | `/auth/telegram/login` | 🔓 | Start Telegram login (bot link) |
+| POST | `/auth/telegram/request-code` | 🔓 | Request a login code |
+| POST | `/auth/telegram/verify-code` | 🔓 | Verify code → returns JWT |
+| GET | `/auth/telegram/me` | 🔐 | Telegram-linked profile |
 
 ### 2. Shops — `/api/shops`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
 | GET | `/shops/{username}` | 🔓 | Public shop lookup (storefront) |
+| GET | `/shops/public/{shop_id}` | 🔓 | Public shop by ID |
 | GET | `/shops` | 👨‍💼 | Admin list of all shops |
-| GET | `/shops/{shop_id}/detail` | 🧑‍💼/👨‍💼 | Full shop detail |
-| PUT | `/shops/{shop_id}/update` | 🧑‍💼/👨‍💼 | Update shop |
+| GET | `/shops/{shop_id}/detail` | 🧑‍💼/👨‍💼 | Full shop detail (settings, counts, owner) |
+| GET | `/shops/{shop_id}/owner` | 🔐 | `{ is_owner }` — server-verifies the Dashboard button |
+| GET | `/shops/{username}/qr` | 🔓 | Shop share-QR image |
+| POST | `/shops` | 👨‍💼 | Admin create shop |
+| PUT | `/shops/{shop_id}/update` | 🧑‍💼/👨‍💼 | Update shop (name, logo, banner, theme, socials) |
 | PUT | `/shops/{shop_id}/status` | 👨‍💼 | Activate / suspend a shop |
 | DELETE | `/shops/{shop_id}` | 👨‍💼 | Delete a shop |
+| POST | `/shops/{shop_id}/set-expiry` | 👨‍💼 | Set plan expiry manually |
+| POST | `/shops/{shop_id}/set-limits` | 👨‍💼 | Override product/category limits |
 
 ### 3. Plans & Resellers — `/api/plans`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
-| GET | `/plans` | 🔓 | Available plans + free offer |
-| POST | `/plans/register` | 🔓 | Self-serve shop registration |
-| POST | `/plans/confirm` | 🔓 | Confirm plan payment |
-| POST | `/plans/upgrade` | 🧑‍💼 | Upgrade / extend shop plan |
+| GET | `/plans` | 🔓 | Available plans + free offer + expiry |
+| POST | `/plans/register` | 🔓 | Self-serve shop + plan registration (returns owner JWT) |
+| POST | `/plans/confirm` | 🔓 | Confirm plan payment / free activation |
+| POST | `/plans/upgrade` | 🧑‍💼 | Upgrade / extend the shop plan |
+| GET | `/plans/charts` | 👨‍💼 | Platform dashboard charts data |
 | GET | `/plans/resellers` | 👨‍💼 | List resellers |
 | POST | `/plans/resellers` | 👨‍💼 | Create reseller |
+| GET | `/plans/resellers/{id}` | 👨‍💼 | Reseller detail |
+| PUT | `/plans/resellers/{id}` | 👨‍💼 | Update reseller |
+| DELETE | `/plans/resellers/{id}` | 👨‍💼 | Delete reseller |
+| GET | `/plans/resellers/{id}/customers` | 👨‍💼 | Shops registered by this reseller |
+| GET | `/plans/reseller/me` | 💸 | Reseller own profile + stats |
+| POST | `/plans/reseller/promo` | 💸 | Create promo code |
+| GET | `/plans/reseller/export` | 💸 | Export reseller shops (Excel) |
+| POST | `/plans/reseller/import` | 💸 | Import reseller shops |
 
 ### 4. Products — `/api/products`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
-| GET | `/products/public` | 🔓 | Public listing (search, category, sort) |
+| GET | `/products/public` | 🔓 | Public listing (search, category, sort, sale) |
 | GET | `/products/{id}/public` | 🔓 | Public product detail |
-| GET | `/products` | 🧑‍💼 | Own products |
-| POST | `/products` | 🧑‍💼 | Create product |
+| GET | `/products` | 🧑‍💼 | Own products (with category name) |
+| GET | `/products/{product_id}` | 🧑‍💼 | One product |
+| POST | `/products` | 🧑‍💼 | Create product (images, variations, attributes) |
 | PUT | `/products/{product_id}` | 🧑‍💼 | Update product |
+| POST | `/products/{product_id}/stock` | 🧑‍💼 | Adjust stock (+/-) |
 | DELETE | `/products/{product_id}` | 🧑‍💼 | Delete product |
+
+**Categories — `/api/categories`**
+| Method | Endpoint | Access | Purpose |
+|---|---|---|---|
+| GET | `/categories/public` | 🔓 | Public categories |
+| GET | `/categories` | 🧑‍💼 | Own categories |
+| POST | `/categories` | 🧑‍💼 | Create category |
+| PUT | `/categories/{category_id}` | 🧑‍💼 | Update category |
+| DELETE | `/categories/{category_id}` | 🧑‍💼 | Delete category |
 
 ### 5. Orders — `/api/orders`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
-| POST | `/orders` | 🔓 | Create a customer order |
-| POST | `/orders/pos` | 🧑‍💼 | POS sale |
-| GET | `/orders` | 🧑‍💼 | Own orders |
+| POST | `/orders` | 🔓 | Create a customer order (requires customer JWT) |
+| POST | `/orders/pos` | 🧑‍💼 | POS sale (walk-in customer) |
+| POST | `/orders/public/history` | 🔓 | Customer order history (by phone) |
+| GET | `/orders/public/track` | 🔓 | Track order status by order number |
+| GET | `/orders` | 🧑‍💼 | Own orders (filter by status) |
+| GET | `/orders/all` | 👨‍💼 | All platform orders |
 | GET | `/orders/{order_id}` | 🧑‍💼/👨‍💼 | Order detail |
 | PUT | `/orders/{order_id}/status` | 🧑‍💼 | Update order status |
-| GET | `/orders/{order_id}/receipt` | 🔓 | PDF receipt |
+| GET | `/orders/{order_id}/receipt` | 🔓 | PDF receipt (bilingual, theme color) |
+| DELETE | `/orders/{order_id}` | 🧑‍💼 | Delete order |
 
 ### 6. Payments — `/api/payments`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
-| POST | `/payments/aba/create` | 🔓 | Create ABA Pay checkout |
-| POST | `/payments/aba/verify` | 🔓 | Verify ABA payment |
-| POST | `/payments/aba/webhook` | 🔓 | ABA webhook handler |
-| POST | `/payments/aba/test` | 🧑‍💼 | Sandbox test payment |
+| POST | `/payments/aba/create` | 🔓 | Create ABA Pay (KHQR) checkout + QR PNG |
+| POST | `/payments/aba/verify` | 🔓 | Verify an ABA payment by transaction ID |
+| POST | `/payments/aba/webhook` | 🔓 | ABA webhook → mark order paid + Telegram alert |
+| POST | `/payments/aba/test` | 🧑‍💼 | Sandbox test payment (auto-succeeds) |
+| GET | `/payments/aba/status` | 🔓 | Payment status / is ABA configured |
+| GET | `/payments/aba/success` | 🔓 | Checkout success landing |
+| GET | `/payments/aba/error` | 🔓 | Checkout error landing |
 
 ### 7. Backup — `/api/backup`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
-| GET | `/backup/admin/export` | 👨‍💼 | Export system backup |
-| POST | `/backup/admin/import` | 👨‍💼 | Import system backup |
-| GET | `/backup/admin/history` | 👨‍💼 | Backup history |
-| GET | `/backup/shop/{shop_id}/export` | 🧑‍💼/👨‍💼 | Export single shop |
+| GET | `/backup/admin/export` | 👨‍💼 | Export system backup (JSON / ZIP-with-images / Excel) |
+| POST | `/backup/admin/import` | 👨‍💼 | Import system backup (ZIP restores images too) |
+| POST | `/backup/admin/create` | 👨‍💼 | Create a backup file on the server |
+| GET | `/backup/admin/history` | 👨‍💼 | Backup history list |
+| GET | `/backup/admin/download` | 👨‍💼 | Download a backup file |
+| GET | `/backup/shop/{shop_id}/export` | 🧑‍💼/👨‍💼 | Export a single shop |
+| POST | `/backup/shop/{shop_id}/create` | 🧑‍💼/👨‍💼 | Create shop backup on the server |
+| POST | `/backup/shop/{shop_id}/import` | 🧑‍💼/👨‍💼 | Import into a shop (with images) |
 
 ### 8. Reports — `/api/reports`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
-| GET | `/reports/overview` | 🧑‍💼 | Dashboard stats |
-| GET | `/reports/sales` | 🧑‍💼 | Sales chart data |
+| GET | `/reports/overview` | 🧑‍💼 | Dashboard stats (sales, orders, products, low stock) |
+| GET | `/reports/sales` | 🧑‍💼 | Sales chart data (day/month range) |
 | GET | `/reports/products` | 🧑‍💼 | Best-selling products |
+| GET | `/reports/customers` | 🧑‍💼 | Top customers |
 | GET | `/reports/stock` | 🧑‍💼 | Stock level report |
+| GET | `/reports/sales/export` | 🧑‍💼 | Export sales (Excel/PDF) |
 
 ### 9. Customers — `/api/customers`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
-| POST | `/customers/auth/signup` | 🔓 | Customer registration |
-| POST | `/customers/auth/signin` | 🔓 | Customer login |
+| POST | `/customers/auth/signup` | 🔓 | Customer self-registration |
+| POST | `/customers/auth/signin` | 🔓 | Customer login (username, email or phone) |
 | GET | `/customers/auth/me` | 🔐 | Customer profile |
+| PUT | `/customers/auth/me` | 🔐 | Update profile |
+| POST | `/customers/auth/change-password` | 🔐 | Change password |
+| GET | `/customers/auth/orders` | 🔐 | My orders |
 | GET | `/customers` | 🧑‍💼 | Own shop's customers |
+| GET | `/customers/{customer_id}` | 🧑‍💼 | Customer detail |
+| POST | `/customers` | 🧑‍💼 | Add customer manually |
+| PUT | `/customers/{customer_id}` | 🧑‍💼 | Update customer |
+| DELETE | `/customers/{customer_id}` | 🧑‍💼 | Delete customer |
 
 ### 10. Telegram — `/api/telegram`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
 | POST | `/telegram/setwebhook` | 🧑‍💼 | Set bot webhook |
+| POST | `/telegram/webhook/{token}` | 🔓 | Bot webhook receiver |
+| GET | `/telegram/settings` | 🧑‍💼 | Bot settings for this shop |
 | POST | `/telegram/test` | 🧑‍💼 | Send test message |
-| GET | `/telegram/settings` | 🧑‍💼 | Bot settings |
 | POST | `/telegram/stock-alert` | 🧑‍💼 | Trigger low-stock alert |
+| GET | `/telegram/activity` | 👨‍💼 | Telegram activity log |
 
 ### 11. Settings & Stats — `/api/settings`
 | Method | Endpoint | Access | Purpose |
 |---|---|---|---|
 | GET | `/settings` | 👨‍💼 | Platform settings |
-| POST | `/settings` | 👨‍💼 | Update platform settings |
+| POST | `/settings` | 👨‍💼 | Update platform settings (registration toggle, etc.) |
+| GET | `/settings/platform` | 🔓 | Public platform info |
 | GET | `/settings/stats` | 👨‍💼 | Platform stats |
 
 ### 12. Uploads — `/api/uploads`
@@ -670,7 +757,7 @@ The project is a **solid foundation**, not a finished product — here are great
 - 💬 **Chat & notifications** — live order notifications (WebSockets / SSE), customer support chat
 - 🌍 **Multi-currency & i18n files** — expand Khmer/English translations
 - 🛒 **More payment gateways** — Wing, ACLEDA, Bakong, Stripe, PayPal
-- 📱 **Mobile app** — React Native / Flutter reusing the same API
+- ✅ **Mobile app** — Flutter storefront **done** (`Frontend_Mobile_APP`), reusing the same API
 - 🔐 **2FA** — email/SMS OTP, TOTP authenticator app
 - 📊 **A/B testing & analytics** — funnel tracking for the storefront
 

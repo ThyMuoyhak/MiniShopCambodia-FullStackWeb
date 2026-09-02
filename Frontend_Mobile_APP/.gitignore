@@ -1,0 +1,23 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+*.iml
+.idea/
+.vscode/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.log
+
+# Secrets / local config
+.env
+*.local
+
+# Android
+android/app/.gradle/
+android/app/local.properties
+android/.gradle/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
