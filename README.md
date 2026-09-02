@@ -166,6 +166,35 @@ All of the above  -->  FastAPI Backend (uvicorn :8000)
 
 The backend is organized into routers (endpoints by domain) and services (business logic: ABA, invoice/PDF, QR, stock, backup, Telegram).
 
+```mermaid
+graph TB
+    subgraph FRONTENDS
+        FU[Frontend_User<br/>storefront and signup<br/>:3000]
+        FA[Frontend_Admin<br/>platform admin<br/>:3001]
+        FD[Frontend_Dashboard_User<br/>shop owner dashboard<br/>:3002]
+        FR[Frontend_Reseller<br/>reseller dashboard<br/>:3005]
+        FM[Frontend_Mobile_APP<br/>Flutter storefront]
+    end
+    API[FastAPI Backend<br/>uvicorn :8000<br/>routers and services]
+    DB[(Database<br/>SQLite dev / PostgreSQL prod)]
+    UP[(Uploads<br/>images, QR, receipts)]
+    ABA[ABA Pay / KHQR<br/>PayWay gateway]
+    TG[Telegram Bot]
+
+    FU --> API
+    FA --> API
+    FD --> API
+    FR --> API
+    FM --> API
+
+    API --> DB
+    API --> UP
+    API --> ABA
+    API --> TG
+
+    ABA -. payment webhook .-> API
+```
+
 ---
 ## 8. Data Model
 
@@ -211,6 +240,157 @@ id, shop_id, telegram_id, code_hash, expires_at (used for Telegram login codes).
 - An Order contains many OrderItems.
 - A Customer places many Orders.
 
+```mermaid
+erDiagram
+    SHOP ||--o{ USER : owns
+    SHOP ||--o{ CATEGORY : has
+    SHOP ||--o{ PRODUCT : sells
+    SHOP ||--o{ CUSTOMER : has
+    SHOP ||--o{ ORDER : receives
+    SHOP ||--o{ SETTING : stores
+    SHOP ||--o{ BACKUP_HISTORY : has
+    SHOP ||--o{ ACTIVITY_LOG : logs
+    SHOP ||--o{ TELEGRAM_CODE : issues
+    USER ||--o{ ACTIVITY_LOG : writes
+    CATEGORY ||--o{ PRODUCT : groups
+    PRODUCT ||--o{ ORDER_ITEM : included in
+    ORDER ||--|{ ORDER_ITEM : contains
+    CUSTOMER ||--o{ ORDER : places
+
+    SHOP {
+        int id PK
+        string username UK
+        string shop_name
+        string logo
+        string banner
+        string bio
+        string description
+        json theme
+        json aba_settings
+        json telegram_settings
+        string currency
+        string plan
+        float plan_price
+        datetime expires_at
+        int max_products
+        int max_categories
+        string status
+        string contact
+    }
+    USER {
+        int id PK
+        string username UK
+        string email
+        string password_hash
+        string role
+        int shop_id FK
+        string status
+        string referral_code
+        float commission_rate
+        int login_failed_count
+        datetime login_locked_until
+    }
+    CATEGORY {
+        int id PK
+        int shop_id FK
+        string name
+        string slug
+        int parent_id FK
+        string image
+        int sort_order
+    }
+    PRODUCT {
+        int id PK
+        int shop_id FK
+        int category_id FK
+        string name
+        string description
+        float price
+        float sale_price
+        int quantity
+        json images
+        json variations
+        json custom_attributes
+        bool featured
+        string status
+    }
+    ORDER {
+        int id PK
+        int shop_id FK
+        int customer_id FK
+        string order_number UK
+        string customer_name
+        string customer_phone
+        string customer_telegram
+        string customer_address
+        float items_total
+        float shipping_fee
+        float discount
+        float total
+        string currency
+        string payment_method
+        string payment_status
+        string transaction_id
+        string order_status
+        string receipt_url
+        datetime created_at
+        datetime paid_at
+    }
+    ORDER_ITEM {
+        int id PK
+        int order_id FK
+        int product_id FK
+        string product_name
+        float price
+        int quantity
+        json variations
+    }
+    CUSTOMER {
+        int id PK
+        int shop_id FK
+        string name
+        string username
+        string phone
+        string email
+        string password_hash
+        string telegram
+        string telegram_id
+        string address
+        string city
+        string country
+    }
+    SETTING {
+        int id PK
+        int shop_id FK
+        string key
+        json value
+    }
+    BACKUP_HISTORY {
+        int id PK
+        int shop_id FK
+        string filename
+        string filepath
+        string kind
+        datetime created_at
+    }
+    ACTIVITY_LOG {
+        int id PK
+        int shop_id FK
+        int user_id FK
+        string username
+        string action
+        string description
+        datetime created_at
+    }
+    TELEGRAM_CODE {
+        int id PK
+        int shop_id FK
+        string telegram_id
+        string code_hash
+        datetime expires_at
+    }
+```
+
 ---
 
 ## 9. Core Flows
@@ -222,6 +402,30 @@ id, shop_id, telegram_id, code_hash, expires_at (used for Telegram login codes).
 4. Free plan: the shop is ACTIVE immediately at 0 USD and expires in 30 days. The owner is auto-logged-in and sees the Dashboard button.
 5. Paid plan: the backend builds an ABA checkout (QR). The customer pays in the ABA app, then the app calls the confirm endpoint, and the shop becomes ACTIVE with the new expiry.
 
+```mermaid
+sequenceDiagram
+    participant U as Customer
+    participant F as Storefront
+    participant A as Backend API
+    participant DB as Database
+    participant ABA as ABA Pay KHQR
+    U->>F: Opens /create-shop
+    U->>F: Picks Starter, Growth, or Premium
+    F->>A: POST /api/plans/register
+    A->>DB: Create shop, owner, plan order
+    alt Free plan Starter
+        A->>DB: Shop ACTIVE at 0 USD for 30 days
+        A-->>F: free true plus access token
+    else Paid plan 6 or 12 months
+        A->>ABA: Build checkout QR
+        ABA-->>A: checkout URL and QR code URL
+        A-->>F: Payment data
+        U->>ABA: Pays in ABA app
+        F->>A: POST /api/plans/confirm
+        A->>DB: Shop ACTIVE with new expiry
+    end
+```
+
 ### Flow 2 - Customer checkout with ABA payment
 1. The customer adds items to the cart and opens checkout.
 2. The app creates the order, then creates an ABA payment.
@@ -232,9 +436,47 @@ id, shop_id, telegram_id, code_hash, expires_at (used for Telegram login codes).
 7. A Telegram notification is sent to the shop.
 8. The customer sees the order success page.
 
+```mermaid
+sequenceDiagram
+    participant C as Customer
+    participant F as Storefront
+    participant A as Backend API
+    participant ABA as ABA Pay KHQR
+    participant T as Telegram
+    C->>F: Add to cart and open checkout
+    F->>A: POST /api/orders
+    F->>A: POST /api/payments/aba/create
+    A->>ABA: Build PayWay checkout
+    ABA-->>A: QR image and checkout URL
+    A-->>F: Payment QR
+    C->>ABA: Scan QR and pay in ABA app
+    A->>ABA: Verify payment or webhook
+    ABA-->>A: Confirmed
+    A->>A: Generate PDF invoice (Khmer and English)
+    A->>T: Send order and payment notification
+    A-->>F: Verified, order success page
+```
+
 ### Flow 3 - Backup and import (ZIP includes real images)
 1. Export: the admin clicks Download ZIP. The backend scans every /uploads reference, copies the real files into an images folder, rewrites the JSON paths, and produces system_backup_*.zip.
 2. Import: the same ZIP is opened on another machine. The backend extracts the images folder into UPLOAD_DIR, rewrites the paths, and the shop plus images are fully restored.
+
+```mermaid
+flowchart LR
+    subgraph EXPORT
+        E1[Admin clicks Download ZIP] --> E2[Scan every /uploads reference]
+        E2 --> E3[Copy real files into images folder]
+        E3 --> E4[Rewrite JSON paths]
+        E4 --> E5[system_backup ZIP file]
+    end
+    subgraph IMPORT
+        I1[Open ZIP on another machine] --> I2[Extract images folder]
+        I2 --> I3[Copy into UPLOAD_DIR]
+        I3 --> I4[Rewrite paths to /uploads]
+        I4 --> I5[Shop and images fully restored]
+    end
+    E5 -. portable .-> I1
+```
 
 ### Flow 4 - Telegram login and owner notifications
 1. The customer taps Login with Telegram.
@@ -243,12 +485,50 @@ id, shop_id, telegram_id, code_hash, expires_at (used for Telegram login codes).
 4. Orders are now linked to that Telegram account.
 5. When a payment is confirmed, the backend sends the full order and invoice summary to the shop Telegram, and the owner receives the new paid-order notification.
 
+```mermaid
+sequenceDiagram
+    participant C as Customer
+    participant F as Storefront
+    participant A as Backend API
+    participant B as Shop Telegram Bot
+    C->>F: Tap Login with Telegram
+    F->>A: POST /api/auth/telegram/request-code
+    A->>B: send 6-digit code to customer Telegram
+    B-->>C: code in private chat
+    C->>F: Enter the code (or widget auth data)
+    F->>A: POST /api/auth/telegram/verify-code
+    A-->>F: Customer JWT
+    Note over A,B: Payment CONFIRMED
+    A->>B: full order and invoice summary
+    B-->>Owner: new paid-order notification
+```
+
 ### Flow 5 - Mobile storefront (Flutter) mirror
 1. The user opens the phone app and searches or browses shops.
 2. The app loads the shop, theme colors, categories, and products, then recolors the UI to the owner theme.
 3. The user opens a product, adds it to the cart, and checks out with an ABA Pay QR bottom sheet.
 4. The payment is verified and the receipt is saved.
 5. In Profile, My Orders shows the order list with PDF receipt download and a Telegram contact button.
+
+```mermaid
+sequenceDiagram
+    participant U as User (phone)
+    participant M as Frontend_Mobile_APP (Flutter)
+    participant A as Backend API
+    U->>M: Opens app, searches or browses shops
+    M->>A: GET /api/shops/demo
+    A-->>M: shop, theme colors, categories, products
+    M->>U: UI recolored to the owner theme
+    U->>M: Product detail, add to cart, checkout
+    M->>A: POST /api/orders and POST /api/payments/aba/create
+    A-->>M: ABA Pay QR bottom sheet
+    U->>M: Confirm payment
+    M->>A: Verify payment
+    A-->>M: Order verified, receipt saved
+    U->>M: Profile, My Orders
+    M->>A: GET /api/customers/auth/orders
+    A-->>M: Order list, PDF receipt, Telegram contact
+```
 
 ---
 ## 10. Mobile App (Flutter)
