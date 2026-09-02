@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/plan.dart';
 import '../providers/shop_provider.dart';
 import '../services/shop_service.dart';
+import '../widgets/aba_payment_sheet.dart';
 import '../widgets/loading_view.dart';
 import 'shop_home_screen.dart';
 
@@ -92,15 +93,71 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
 
       final orderId = (result['order_id'] as num?)?.toInt();
       final shopId = (result['shop_id'] as num?)?.toInt();
+      final isFree = result['free'] == true;
+      final payment = result['payment'] as Map<String, dynamic>?;
 
-      // 2. Free plans activate immediately via /api/plans/confirm.
-      if (result['free'] == true && orderId != null && shopId != null) {
-        await _shopService.confirmPlan(orderId: orderId, shopId: shopId);
+      if (!mounted) return;
+
+      if (isFree) {
+        // 2a. FREE plans activate immediately via /api/plans/confirm.
+        if (orderId != null && shopId != null) {
+          await _shopService.confirmPlan(orderId: orderId, shopId: shopId);
+        }
+      } else if (payment != null) {
+        // 2b. PAID plan → show the ABA QR payment bottom sheet (slides up).
+        //     /api/plans/confirm BOTH verifies the payment AND activates the
+        //     shop, so we poll it until the backend says verified.
+        final username = (result['username'] as String?) ??
+            _usernameController.text.trim();
+        final transactionId =
+            (payment['transaction_id'] as String?) ?? '';
+
+        final paid = await showAbaPaymentSheet(
+          context,
+          title: 'Pay for your $_selectedPlan plan',
+          description: 'Your shop "$username" is ready. Scan the QR with the '
+              'ABA Mobile app to activate your $_selectedPlan plan.',
+          amount: (payment['amount'] as num?)?.toDouble() ??
+              (result['amount'] as num?)?.toDouble() ??
+              0,
+          currency: 'USD',
+          transactionId: transactionId,
+          qrCodeUrl: payment['qr_code_url']?.toString(),
+          checkoutUrl: payment['checkout_url']?.toString(),
+          verify: () async {
+            final confirm = await _shopService.confirmPlan(
+              orderId: orderId ?? 0,
+              shopId: shopId ?? 0,
+              transactionId: transactionId,
+            );
+            return confirm['verified'] == true;
+          },
+        );
+
+        if (!mounted) return;
+        if (!paid) {
+          setState(() {
+            _submitting = false;
+            _error = 'Payment not completed — your shop is saved as pending. '
+                'You can pay later from the storefront.';
+          });
+          return;
+        }
+      } else {
+        // Platform ABA Pay not configured — shop stays pending.
+        if (!mounted) return;
+        setState(() {
+          _submitting = false;
+          _error = 'Online payment is temporarily unavailable. '
+              'Your shop was saved as pending — contact the platform to activate it.';
+        });
+        return;
       }
 
       // 3. Open the brand-new shop in the app.
       final username = (result['username'] as String?) ??
           _usernameController.text.trim();
+      if (!mounted) return;
       final provider = context.read<ShopProvider>();
       await provider.loadShop(username);
 
@@ -124,6 +181,62 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Create your shop')),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(
+            'Start selling online in minutes 🚀',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Create your own storefront. The Starter plan is FREE for 30 days.',
+            style: TextStyle(color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 20),
+
+          TextField(
+            controller: _usernameController,
+            decoration: _dec('Shop username * (storefront link)',
+                prefix: '@'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _shopNameController,
+            decoration: _dec('Shop name *'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: _dec('Email'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _phoneController,
+            keyboardType: TextInputType.phone,
+            decoration: _dec('Phone'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: _dec('Password * (min 4 characters)'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _referralController,
+            decoration: _dec('Referral code (optional)'),
+          ),
+          const SizedBox(height: 20),
 
 
           // Plan picker
@@ -194,59 +307,3 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
   }
 }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Create your shop')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(
-            'Start selling online in minutes 🚀',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Create your own storefront. The Starter plan is FREE for 30 days.',
-            style: TextStyle(color: Colors.grey.shade600),
-          ),
-          const SizedBox(height: 20),
-
-          TextField(
-            controller: _usernameController,
-            decoration: _dec('Shop username * (storefront link)',
-                prefix: '@'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _shopNameController,
-            decoration: _dec('Shop name *'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: _dec('Email'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _phoneController,
-            keyboardType: TextInputType.phone,
-            decoration: _dec('Phone'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: _dec('Password * (min 4 characters)'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: _referralController,
-            decoration: _dec('Referral code (optional)'),
-          ),
-          const SizedBox(height: 20),

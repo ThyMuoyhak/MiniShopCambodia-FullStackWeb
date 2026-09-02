@@ -63,6 +63,18 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined), label: 'Shop'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.grid_view_outlined), label: 'Products'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+}
 
 /// Shop landing: header, categories, featured products, all products.
 class _ShopOverviewTab extends StatelessWidget {
@@ -128,6 +140,21 @@ class _ShopOverviewTab extends StatelessWidget {
                           builder: (_) => ProductDetailScreen(product: product),
                         ),
                       ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+
+          _sectionTitle(context, 'All products'),
+          _productsGrid(context, products, shop.currency),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
 
   Widget _sectionTitle(BuildContext context, String title) {
     return Padding(
@@ -220,31 +247,3 @@ class _CategoryAction extends StatelessWidget {
   }
 }
 
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-
-          _sectionTitle(context, 'All products'),
-          _productsGrid(context, products, shop.currency),
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-
-              icon: Icon(Icons.home_outlined), label: 'Shop'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view_outlined), label: 'Products'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-        ],
-      ),
-    );
-  }
-}

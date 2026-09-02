@@ -158,18 +158,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                FilledButton(
-                  onPressed: _openingShop
-                      ? null
-                      : () => _openShop(_searchController.text),
-                  child: _openingShop
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 2),
-                        )
-                      : const Text('Open'),
+                SizedBox(
+                  width: 110,
+                  height: 50,
+                  child: FilledButton(
+                    onPressed: _openingShop
+                        ? null
+                        : () => _openShop(_searchController.text),
+                    child: _openingShop
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                                color: Colors.white, strokeWidth: 2),
+                          )
+                        : const Text('Open'),
+                  ),
                 ),
               ],
             ),
@@ -313,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
               try {
                 final order =
                     await _orderService.trackOrder(controller.text.trim());
-                if (!mounted) return;
+                if (!context.mounted) return;
                 showDialog<void>(
                   context: context,
                   builder: (context) => AlertDialog(
@@ -339,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               } catch (e) {
-                if (!mounted) return;
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('$e'),

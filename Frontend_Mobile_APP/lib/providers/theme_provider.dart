@@ -23,7 +23,7 @@ class ThemeProvider extends ChangeNotifier {
 /// falling back to the MiniShop brand orange → purple gradient.
 class ShopTheme {
   static Color parseHex(String hex, {Color fallback = const Color(0xFFFF6B00)}) {
-    if (hex == null || hex.isEmpty) return fallback;
+    if (hex.isEmpty) return fallback;
     final cleaned = hex.replaceFirst('#', '');
     final value = int.tryParse(cleaned, radix: 16);
     if (value == null) return fallback;
@@ -38,8 +38,6 @@ class ShopTheme {
     required bool dark,
   }) {
     final primary = parseHex(primaryHex);
-    final secondary = parseHex(secondaryHex,
-        fallback: const Color(0xFF8E2DE2));
     final brightness = dark ? Brightness.dark : Brightness.light;
 
     return ThemeData(
@@ -62,10 +60,11 @@ class ShopTheme {
         style: FilledButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(50),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          textStyle:
+              const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
       chipTheme: ChipThemeData(

@@ -8,7 +8,7 @@
 ---
 
 ## 📋 Table of Contents
-- [Live Demo](#-live-demo)
+- [Run Locally](#-run-locally)
 - [Developed By](#-developed-by)
 - [License & Usage Policy](#-license--usage-policy)
 - [Security Policy](#-security-policy)
@@ -30,15 +30,20 @@
 
 ---
 
-## 🌐 Live Demo (Production)
+## 🖥️ Run Locally
 
-| Link | What You'll See |
+This repository is **100% code** — it contains no real user data, no production
+credentials and no deployed server URLs.
+
+| To try | How |
 |---|---|
-| **[https://minishopcambodia.store](https://minishopcambodia.store)** | Public storefront homepage (bilingual, plans, pricing) |
-| **[https://minishopcambodia.store/demo](https://minishopcambodia.store/demo)** | A real working shop (products, cart, ABA checkout, orders) |
-| **`/create-shop`** | Self-serve shop registration — Starter plan is **FREE (1 month)** |
+| 🛍️ Storefront | `cd Frontend_User` → `npm install` → `npm start` (port 3000) |
+| 🏪 Open the demo shop | go to `http://localhost:3000/demo` |
+| 🎛️ Create your own shop | `http://localhost:3000/create-shop` — Starter plan is **FREE (1 month)** |
+| 👨‍💼 Admin / 🧑‍💻 Owner / 💸 Reseller | see the Quick Start section below |
 
-> Demo admin/owner credentials are shown in the deployed apps' login pages (`demo` / `demo123`).
+> The accounts shown in this README (`admin`, `demo`, …) are **local seed
+> accounts only** — created on a fresh database. They are never real users.
 
 ---
 
@@ -785,7 +790,7 @@ We welcome contributions! Please follow these steps:
 
 - ⭐ **Star this repo** and share it with other learners
 - 💬 **Questions / ideas** → Telegram [t.me/thymuoyhak](https://t.me/thymuoyhak)
-- 🌍 **Live demo** → [https://minishopcambodia.store](https://minishopcambodia.store) · [https://minishopcambodia.store/demo](https://minishopcambodia.store/demo)
+- 🌍 **Try it now** → clone the repo and run it locally (see Quick Start)
 
 ---
 

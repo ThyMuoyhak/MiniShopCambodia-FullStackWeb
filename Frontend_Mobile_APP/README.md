@@ -24,21 +24,20 @@ The **mobile storefront** for MiniShop Cambodia — a Flutter app that mirrors t
 cd Frontend_Mobile_APP
 flutter pub get
 
-# Default: talks to the DEPLOYED backend (https://minishop-backend-api.onrender.com)
+# Default: LOCAL backend (http://localhost:8000)
 flutter run -d chrome
 
-# Local backend instead:
-flutter run --dart-define=API_URL=http://localhost:8000
 # Android emulator (backend on the host):
 flutter run --dart-define=API_URL=http://10.0.2.2:8000
+
+# Point at your own deployed backend:
+flutter run --dart-define=API_URL=https://your-api.onrender.com
 ```
 
-> ⚠️ **CORS**: when running as a **web app** in Chrome against the deployed
-> backend, the browser blocks requests unless the backend's `CORS_ORIGINS`
-> includes your origin. The deployed backend currently allows
-> `https://minishopcambodia.store` — add `http://localhost:8080` in the Render
-> dashboard env vars (then redeploy) for local web testing. Native Android/iOS
-> builds have **no CORS restriction**.
+> ⚠️ **CORS**: when running as a **web app** in Chrome against a remote backend,
+> the browser blocks requests unless that backend's `CORS_ORIGINS` includes your
+> origin — add `http://localhost:8080` (then redeploy) for local web testing.
+> Native Android/iOS builds have **no CORS restriction**.
 
 ### Requirements
 - Flutter SDK **3.27+** (https://docs.flutter.dev/get-started/install)

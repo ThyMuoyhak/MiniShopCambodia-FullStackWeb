@@ -97,6 +97,11 @@ class CartScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+              ],
+            ),
+    );
+  }
+}
 
 class _CartRow extends StatelessWidget {
   final CartItem item;
@@ -199,8 +204,3 @@ class _CartRow extends StatelessWidget {
   }
 }
 
-              ],
-            ),
-    );
-  }
-}

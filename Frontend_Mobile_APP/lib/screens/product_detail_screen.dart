@@ -108,7 +108,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ),
                         ),
-
+                      ],
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    product.inStock
+                        ? 'In stock • ${product.quantity} available'
+                        : 'Sold out',
+                    style: TextStyle(
+                      color: product.inStock
+                          ? Colors.green.shade600
+                          : Colors.red.shade400,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   // Description
                   if (product.description.isNotEmpty) ...[
                     const Text('Description',
@@ -203,6 +218,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ),
       ),
     );
+  }
 
   Widget _imageGallery(BuildContext context) {
     final images = product.images;
@@ -283,21 +299,4 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 }
 
-  }
 
-                      ],
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    product.inStock
-                        ? 'In stock • ${product.quantity} available'
-                        : 'Sold out',
-                    style: TextStyle(
-                      color: product.inStock
-                          ? Colors.green.shade600
-                          : Colors.red.shade400,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 16),

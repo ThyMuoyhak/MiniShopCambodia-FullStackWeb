@@ -66,7 +66,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
             onSelected: _onSort,
             itemBuilder: (context) => const [
               PopupMenuItem(value: 'newest', child: Text('Newest')),
-              PopupMenuItem(value: 'price_asc', child: Text('Price: low to high')),
+              PopupMenuItem(
+                  value: 'price_asc', child: Text('Price: low to high')),
               PopupMenuItem(
                   value: 'price_desc', child: Text('Price: high to low')),
             ],

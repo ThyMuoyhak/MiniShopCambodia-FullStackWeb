@@ -3,7 +3,8 @@
   publish = "build"
 
 [build.environment]
-  REACT_APP_API_URL = "https://minishop-backend-api.onrender.com"
+  # Point your own deployment at YOUR backend (set it in the Netlify UI for real deploys)
+  REACT_APP_API_URL = "http://localhost:8000"
   CI = "false"
 
 # SPA fallback: serve index.html for all client-side routes
