@@ -1,571 +1,365 @@
-﻿# ðŸ›ï¸ MiniShop â€” Multi-Store E-Commerce Platform
+﻿# MiniShop - Multi-Store E-Commerce Platform
 
-> A complete **multi-tenant e-commerce platform** where every shop gets its own storefront, dashboard, POS, **ABA Pay (KHQR)** checkout, PDF invoices, Telegram notifications and **reseller commissions**.
-> Built with **FastAPI + React (5 web apps) + Flutter (mobile app)** and a **free 1-month Starter plan** for new shops.
+A complete multi-tenant e-commerce platform where every shop gets its own storefront, dashboard, POS, ABA Pay (KHQR) checkout, PDF invoices, Telegram notifications, and reseller commissions.
 
-**This repository is 100% code** â€” all data, databases, uploads, backups and production secrets have been removed so you can safely clone it, study it and build your own project.
+Built with FastAPI + React (5 web apps) + Flutter (mobile app), and a free 1-month Starter plan for new shops.
 
----
-
-## ðŸ“‹ Table of Contents
-- [Run Locally](#-run-locally)
-- [Developed By](#-developed-by)
-- [License & Usage Policy](#-license--usage-policy)
-- [Security Policy](#-security-policy)
-- [Features](#-features-at-a-glance)
-- [Tech Stack](#-tech-stack)
-- [Mobile App (Flutter)](#-mobile-app-flutter)
-- [Architecture](#-architecture)
-- [Data Model](#-data-model)
-- [Core Flows](#-core-flows)
-- [Project Structure](#-project-structure)
-- [Quick Start](#-quick-start)
-- [Environment Variables](#-environment-variables)
-- [PostgreSQL Setup](#-using-postgresql-instead-of-sqlite)
-- [API Reference](#-complete-api-reference)
-- [Deployment](#-deployment-notes)
-- [Roadmap](#-suggested-roadmap-to-continue-building)
-- [Contributing](#-contributing)
-- [Support](#-support-the-project)
+IMPORTANT: This repository is 100% code. All data, databases, uploads, backups and production secrets have been removed so you can safely clone it, study it, and build your own project. Everything runs locally with localhost defaults and demo seed accounts only.
 
 ---
 
-## ðŸ–¥ï¸ Run Locally
+## Table of Contents
 
-This repository is **100% code** â€” it contains no real user data, no production
-credentials and no deployed server URLs.
+1. Run Locally
+2. About and Developer
+3. License and Usage Policy
+4. Security Policy
+5. Features
+6. Tech Stack
+7. Architecture
+8. Data Model
+9. Core Flows
+10. Mobile App (Flutter)
+11. Project Structure
+12. Quick Start
+13. Environment Variables
+14. Using PostgreSQL Instead of SQLite
+15. Complete API Reference
+16. Deployment Notes
+17. Suggested Roadmap
+18. Contributing
+19. Disclaimer and Full License
+
+---
+
+## 1. Run Locally
 
 | To try | How |
 |---|---|
-| ðŸ›ï¸ Storefront | `cd Frontend_User` â†’ `npm install` â†’ `npm start` (port 3000) |
-| ðŸª Open the demo shop | go to `http://localhost:3000/demo` |
-| ðŸŽ›ï¸ Create your own shop | `http://localhost:3000/create-shop` â€” Starter plan is **FREE (1 month)** |
-| ðŸ‘¨â€ðŸ’¼ Admin / ðŸ§‘â€ðŸ’» Owner / ðŸ’¸ Reseller | see the Quick Start section below |
+| Customer storefront | cd Frontend_User, then npm install, then npm start (port 3000) |
+| Open the demo shop | http://localhost:3000/demo |
+| Create your own shop | http://localhost:3000/create-shop (Starter plan is FREE for 1 month) |
+| Admin / Shop owner / Reseller dashboards | see the Quick Start section below |
 
-> The accounts shown in this README (`admin`, `demo`, â€¦) are **local seed
-> accounts only** â€” created on a fresh database. They are never real users.
-
----
-
-## ðŸ‘¨â€ðŸ’» Developed By
-
-**Thy Muoyhak â€” HakSimpleDev**
-
-| | |
-|---|---|
-| ðŸ’¬ Telegram | [t.me/thymuoyhak](https://t.me/thymuoyhak) |
-| ðŸ™ GitHub | [github.com/ThyMuoyhak](https://github.com/ThyMuoyhak) |
-| ðŸŽ“ Purpose | Learn, strengthen skills, and build a portfolio with a production-grade full-stack project |
+All accounts shown in this README (admin, demo, and so on) are LOCAL SEED accounts only. They are created automatically on a fresh local database and are never real users.
 
 ---
 
-## ðŸ“œ License & Usage Policy
+## 2. About and Developer
 
-**Copyright Â© 2024 Thy Muoyhak (HakSimpleDev)**
+Developer: Thy Muoyhak (HakSimpleDev)
 
-This project is published with one clear goal:
-
-> **Help new developers learn, upskill, and build a portfolio** by studying a real full-stack production-style architecture â€” and to **continue developing it further**.
-
-### âœ… **Allowed (Free)**
-- Clone, fork, study, and learn from the code
-- Run locally for learning, experiments, and portfolio demos
-- Modify, improve, and extend the project for personal use
-- Use the code as a reference when building your own projects
-- Contribute improvements via Pull Requests
-
-### âŒ **Not Allowed Without Permission**
-- Using this project (or a copy of it) to run a **real business** / commercial service
-- Claiming it as your own product or reselling it
-- Removing the author credit
-
-> If you want to use this project for business or a commercial product, **please contact the author first and follow the legal process (áž’áŸ’ážœáž¾ážáž¶áž˜áž•áŸ’áž›áž¼ážœáž…áŸ’áž”áž¶áž”áŸ‹)**.
-
-**ðŸ” Credentials in this repo are DEMO-ONLY.** The passwords shown (e.g. `ChangeMe123!`, `demo123`) are generated by the seed for a **fresh local database** â€” they are **never** the credentials of real users from the production site, and **no real user data is included** in this repository.
+- Telegram: https://t.me/thymuoyhak
+- GitHub: https://github.com/ThyMuoyhak
+- Purpose: learn, strengthen skills, and build a portfolio with a production-grade full-stack project.
 
 ---
 
-## ðŸ”’ Security Policy
+## 3. License and Usage Policy
+
+Copyright (c) 2024 Thy Muoyhak (HakSimpleDev)
+
+The project is published to help new developers learn, upskill, and build a portfolio by studying a real production-style architecture.
+
+Allowed (free):
+- Clone, fork, study, and learn from the code.
+- Run locally for learning, experiments, and portfolio demos.
+- Modify, improve, and extend the project for personal use.
+- Use the code as a reference when building your own projects.
+- Contribute improvements via Pull Requests.
+
+Not allowed without permission:
+- Using this project (or a copy of it) to run a real business or commercial service.
+- Claiming it as your own product or reselling it.
+- Removing the author credit.
+
+If you want to use this project for a business or a commercial product, please contact the author first and follow the legal process.
+
+All credentials in this repository are DEMO-ONLY (for example ChangeMe123! and demo123). They are generated by the seed script on a fresh local database. They are never the credentials of real users, and no real user data is included anywhere in this repository.
+
+---
+## 4. Security Policy
 
 ### Reporting Vulnerabilities
-If you discover a security vulnerability, please **DO NOT** open a public issue. Instead:
-
-1. **Email**: [thymuoyhak.biu@gmail.com]
-2. **Telegram**: [t.me/thymuoyhak](https://t.me/thymuoyhak)
-
-You will receive a response within **48 hours**, and we will work with you to patch the issue.
+If you discover a security vulnerability, please DO NOT open a public issue. Contact the author privately first:
+- Email: thymuoyhak.biu@gmail.com
+- Telegram: https://t.me/thymuoyhak
 
 ### Security Best Practices for Production
-**âš ï¸ IMPORTANT**: This project is designed for **development and learning**. Before deploying to production:
+This project is designed for development and learning. Before deploying to production you must:
 
-| Security Issue | Action Required |
+| Security issue | Action required |
 |---|---|
-| Default passwords | Change `admin`/`ChangeMe123!` and `demo`/`demo123` |
-| JWT Secret | Generate new key: `openssl rand -hex 32` |
-| CORS Origins | Restrict to specific domains only |
+| Default passwords | Change admin/ChangeMe123! and demo/demo123 |
+| JWT secret | Generate a new key with: openssl rand -hex 32 |
+| CORS origins | Restrict to your own domains only |
 | ABA Pay | Switch from Sandbox to Live mode |
-| Database | Use PostgreSQL, not SQLite |
-| Uploads | Validate file types & size limits |
-| HTTPS | Enable SSL/TLS (Let's Encrypt) |
-| Rate Limiting | Implement API rate limiting |
-| Backups | Regular automated backups |
+| Database | Use PostgreSQL instead of SQLite |
+| Uploads | Validate file types and size limits |
+| HTTPS | Enable SSL/TLS |
+| Rate limiting | Add API rate limiting |
+| Backups | Set up automatic backups |
 
-### Security Features Built-In
-- âœ… bcrypt password hashing
-- âœ… JWT bearer tokens with expiration
-- âœ… Role-based access control (admin, shop_owner, staff, reseller)
-- âœ… Failed-login lockout (3 wrong â†’ 5 min lock, escalating)
-- âœ… Environment variables for all secrets
-- âœ… SQL injection protection (SQLAlchemy ORM)
-- âœ… XSS protection (React escapes content)
-- âœ… CSRF protection (JWT tokens)
+### Security Features Built In
+- bcrypt password hashing
+- JWT bearer tokens with expiration
+- Role-based access control: admin, shop_owner, staff, reseller
+- Failed-login lockout (3 wrong attempts locks for 5 minutes, then escalating)
+- All secrets come from environment variables
+- SQL injection protection (SQLAlchemy ORM)
+- XSS protection (React escapes content)
+- CSRF protection (JWT tokens)
 
 ---
 
-## âœ¨ Features at a Glance
+## 5. Features
 
 | Feature | Details |
 |---|---|
-| ðŸª **Multi-shop** | Each shop has its own `/:username` storefront, logo, banner, theme colors & fonts |
-| ðŸŽ›ï¸ **Self-serve signup** | Customers create their own shop, pick a plan (free 1-month starter, 6-month, 1-year) and pay via ABA |
-| ðŸ’³ **ABA Pay (KHQR)** | Real KHQR payment â€” QR image generated locally, sandbox & live modes, auto-confirm + webhook |
-| ðŸ§¾ **PDF invoices** | Bilingual (Khmer + English) invoices with shop logo & theme color |
-| ðŸ›— **POS** | In-store POS sale screen for shop staff |
-| ðŸ’¾ **Backup / Import** | JSON / ZIP / Excel backups â€” **ZIPs embed the real image files** and import restores them |
-| ðŸ¤– **Telegram** | Payment alerts, order notifications & low-stock alerts to the shop's group |
-| ðŸ’¸ **Resellers** | Referral codes, commissions %, promo discounts, per-shop revenue view |
-| ðŸ” **Secure login** | bcrypt + JWT, role-based access, **failed-attempt lockout** (3 wrong â†’ locked, escalating 5/10/15 min) |
-| ðŸŒ **Bilingual** | Full Khmer (áž—áž¶ážŸáž¶ážáŸ’áž˜áŸ‚ážš) + English UI, `Asia/Phnom_Penh` timezone |
-| ðŸŒ— **Dark / Light mode** | Every shop storefront supports both themes |
-| ðŸ“± **Mobile app** | **Flutter** storefront (`Frontend_Mobile_APP`) â€” browse shops, cart, checkout, ABA Pay, customer login â€” same FastAPI backend |
-| ðŸ“Š **Dashboards** | Admin (6 charts), shop owner, and reseller dashboards with real data |
+| Multi-shop | Each shop has its own storefront at /:username with logo, banner, theme colors and fonts |
+| Self-serve signup | Customers create their own shop, pick a plan (free 1-month starter, 6-month, 1-year) and pay via ABA |
+| ABA Pay (KHQR) | KHQR QR image generated locally, sandbox and live modes, auto-confirm plus webhook |
+| PDF invoices | Bilingual (Khmer and English) invoices with shop logo and theme color |
+| POS | In-store POS sale screen for shop staff |
+| Backup / Import | JSON / ZIP / Excel backups; ZIP backups embed the real image files and import restores them |
+| Telegram | Payment alerts, order notifications and low-stock alerts to the shop group |
+| Resellers | Referral codes, commission percentage, promo discounts, per-shop revenue view |
+| Secure login | bcrypt + JWT, role-based access, failed-attempt lockout |
+| Bilingual UI | Full Khmer and English UI with Asia/Phnom_Penh timezone |
+| Dark / Light mode | Every shop storefront supports both themes |
+| Mobile app | Flutter storefront (Frontend_Mobile_APP): browse shops, cart, checkout, ABA Pay, customer login |
+| Dashboards | Admin (6 charts), shop owner, and reseller dashboards with real data |
 
 ---
 
-## ðŸ§° Tech Stack
+## 6. Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Backend | Python 3.10+ Â· **FastAPI** Â· SQLAlchemy Â· SQLite (dev) / PostgreSQL (prod) Â· Uvicorn |
-| Frontends | **React 18 (Create React App)** Â· Tailwind CSS Â· react-router-dom Â· recharts Â· chart.js |
-| Mobile | **Flutter** (Dart) Â· Provider Â· http Â· shared_preferences Â· url_launcher |
-| Auth | bcrypt Â· PyJWT (JWT bearer tokens) Â· role guards + failed-login lockout |
-| Payments | **ABA Pay (KHQR)** â€” PayWay gateway (sandbox + live) |
-| PDF | reportlab + optional headless Edge/Chromium for high-quality HTML invoices |
-| Deploy | Render / Railway / VPS (backend) Â· Netlify / Vercel (frontends) |
+| Backend | Python 3.10+, FastAPI, SQLAlchemy, SQLite (dev) / PostgreSQL (prod), Uvicorn |
+| Frontends | React 18 (Create React App), Tailwind CSS, react-router-dom, recharts, chart.js |
+| Mobile | Flutter (Dart), Provider, http, shared_preferences, url_launcher |
+| Auth | bcrypt, PyJWT (JWT bearer tokens), role guards, failed-login lockout |
+| Payments | ABA Pay (KHQR) via the PayWay gateway (sandbox and live) |
+| PDF | reportlab plus optional headless Edge/Chromium for high-quality HTML invoices |
+| Deploy | Render / Railway / VPS (backend), Netlify / Vercel (frontends) |
 
 ---
 
-## ðŸ—ï¸ Architecture
+## 7. Architecture
 
-```mermaid
-graph TB
-    subgraph Frontend_Apps
-        FU["Frontend_User ðŸ›ï¸<br/>Storefront + signup<br/>:3000"]
-        FA["Frontend_Admin ðŸ‘¨â€ðŸ’¼<br/>Platform admin<br/>:3001"]
-        FD["Frontend_Dashboard_User ðŸ§‘â€ðŸ’»<br/>Shop owner dashboard<br/>:3002"]
-        FR["Frontend_Reseller ðŸ’¸<br/>Reseller dashboard<br/>:3005"]
-    end
+Four web frontends plus one mobile app all talk to one FastAPI backend:
 
-    API["FastAPI Backend ðŸ<br/>uvicorn :8000<br/>routers/ + services/"]
-
-    DB[("Database<br/>SQLite (dev)<br/>PostgreSQL (prod)")]
-    UPL[("Uploads<br/>images Â· QR Â· receipts")]
-    ABA["ABA Pay / KHQR<br/>PayWay gateway"]
-    TG["Telegram Bot"]
-
-    FU --> API
-    FA --> API
-    FD --> API
-    FR --> API
-
-    API --> DB
-    API --> UPL
-    API --> ABA
-    API --> TG
-
-    FU -- "receipt / QR url" --> UPL
-    API -- "payment webhook" --> ABA
 ```
+Frontend_User            :3000   Storefront and self-serve signup
+Frontend_Admin           :3001   Platform admin panel
+Frontend_Dashboard_User  :3002   Shop owner dashboard
+Frontend_Reseller        :3005   Reseller dashboard
+Frontend_Mobile_APP             Flutter storefront (Android / iOS)
+
+All of the above  -->  FastAPI Backend (uvicorn :8000)
+                         |--- Database (SQLite dev / PostgreSQL prod)
+                         |--- Uploads (images, QR codes, receipts)
+                         |--- ABA Pay / KHQR (PayWay gateway)
+                         |--- Telegram Bot
+```
+
+The backend is organized into routers (endpoints by domain) and services (business logic: ABA, invoice/PDF, QR, stock, backup, Telegram).
+
+---
+## 8. Data Model
+
+The main tables and their key fields are:
+
+### Shop
+id, username (unique), shop_name, logo, banner, bio, description, slideshow (JSON), social_media (JSON), theme (JSON with primary/secondary colors), aba_settings (JSON), telegram_settings (JSON), currency, plan, plan_price, expires_at, max_products, max_categories, contact, status, created_at.
+
+### User (dashboard / staff accounts)
+id, username (unique), email, password_hash, role (admin, shop_owner, staff, reseller), shop_id, status, referral_code, commission_rate, commission_paid, login_failed_count, login_locked_until, created_at.
+
+### Category
+id, shop_id, name, slug, parent_id (supports nested categories), image, sort_order.
+
+### Product
+id, shop_id, category_id, name, description, price, sale_price, quantity (stock), images (JSON array), variations (JSON, e.g. size and color), custom_attributes (JSON), metadata_json, featured, status, created_at.
+
+### Order
+id, shop_id, customer_id, order_number (unique), customer_name, customer_email, customer_phone, customer_telegram, customer_address, customer_city, customer_country, customer_note, items_total, shipping_fee, discount, total, currency, payment_method, payment_status, transaction_id, payment_detail, order_status, receipt_url, created_at, paid_at.
+
+### OrderItem
+id, order_id, product_id, product_name, price, quantity, variations (JSON).
+
+### Customer
+id, shop_id, first_name, last_name, gender, name, username, phone, email, password_hash, telegram, telegram_username, telegram_phone, telegram_id, address, city, country, notes, created_at.
+
+### Setting
+id, shop_id, key, value.
+
+### BackupHistory
+id, shop_id, filename, filepath, kind, created_at.
+
+### ActivityLog
+id, shop_id, user_id, username, action, description, created_at.
+
+### TelegramCode
+id, shop_id, telegram_id, code_hash, expires_at (used for Telegram login codes).
+
+### Relationships
+- A Shop has many Users, Categories, Products, Customers, Orders, Settings, BackupHistory rows, ActivityLog rows, and TelegramCode rows.
+- A Category has many Products.
+- A Product appears in many OrderItems.
+- An Order contains many OrderItems.
+- A Customer places many Orders.
 
 ---
 
-## ðŸ“Š Data Model
+## 9. Core Flows
 
-```mermaid
-erDiagram
-    SHOP ||--o{ USER : "owns / staff"
-    SHOP ||--o{ CATEGORY : has
-    SHOP ||--o{ PRODUCT : sells
-    SHOP ||--o{ CUSTOMER : has
-    SHOP ||--o{ ORDER : receives
-    SHOP ||--o{ SETTING : stores
-    CATEGORY ||--o{ PRODUCT : groups
-    PRODUCT ||--o{ ORDER_ITEM : "included in"
-    ORDER ||--|{ ORDER_ITEM : contains
-    CUSTOMER ||--o{ ORDER : places
-    SHOP ||--o{ BACKUP_HISTORY : has
-    USER }o--|| SHOP : "shop_id"
+### Flow 1 - Self-serve shop registration plus FREE plan
+1. A customer opens /create-shop on the storefront.
+2. They pick Starter (free 1 month), Growth, or Premium (6 or 12 months).
+3. The backend creates the shop, the owner account, and the plan order.
+4. Free plan: the shop is ACTIVE immediately at 0 USD and expires in 30 days. The owner is auto-logged-in and sees the Dashboard button.
+5. Paid plan: the backend builds an ABA checkout (QR). The customer pays in the ABA app, then the app calls the confirm endpoint, and the shop becomes ACTIVE with the new expiry.
 
-    SHOP {
-        int id PK
-        string username UK
-        string shop_name
-        string logo
-        string banner
-        json theme
-        json aba_settings
-        json telegram_settings
-        string plan
-        float plan_price
-        datetime expires_at
-        int max_products
-        int max_categories
-        string status
-    }
-    USER {
-        int id PK
-        string username UK
-        string password_hash
-        string role "admin|shop_owner|staff|reseller"
-        int shop_id FK
-        string referral_code
-        float commission_rate
-        int login_failed_count
-        datetime login_locked_until
-    }
-    PRODUCT {
-        int id PK
-        int shop_id FK
-        int category_id FK
-        string name
-        float price
-        float sale_price
-        json images
-        int quantity
-        json variations
-        json custom_attributes
-        bool featured
-        string status
-    }
-    ORDER {
-        int id PK
-        int shop_id FK
-        int customer_id FK
-        string order_number UK
-        float total
-        string payment_status
-        string order_status
-        string payment_method
-        datetime paid_at
-    }
-    ORDER_ITEM {
-        int id PK
-        int order_id FK
-        int product_id FK
-        string product_name
-        float price
-        int quantity
-        json variations
-    }
-    SHOP ||--o{ SETTING : stores
-    SHOP ||--o{ BACKUP_HISTORY : has
-    SHOP ||--o{ ACTIVITY_LOG : logs
-    SHOP ||--o{ TELEGRAM_CODE : issues
-    USER ||--o{ ACTIVITY_LOG : writes
-    CUSTOMER ||--o{ ORDER : places
+### Flow 2 - Customer checkout with ABA payment
+1. The customer adds items to the cart and opens checkout.
+2. The app creates the order, then creates an ABA payment.
+3. The backend builds the PayWay checkout and returns the QR image plus checkout URL.
+4. The customer scans the QR and pays in the ABA app.
+5. The backend verifies the payment (or receives the webhook) and marks the order paid.
+6. A PDF invoice is generated (bilingual, with shop logo and theme color).
+7. A Telegram notification is sent to the shop.
+8. The customer sees the order success page.
 
-    CATEGORY {
-        int id PK
-        int shop_id FK
-        string name
-        string slug
-        int parent_id FK "nested categories"
-        string image
-        int sort_order
-    }
-    CUSTOMER {
-        int id PK
-        int shop_id FK
-        string name
-        string username
-        string phone
-        string email
-        string password_hash
-        string telegram "handle"
-        string telegram_id
-        string address
-        string city
-        string country
-        string notes
-    }
-    SETTING {
-        int id PK
-        int shop_id FK
-        string key
-        json value
-    }
-    BACKUP_HISTORY {
-        int id PK
-        int shop_id FK
-        string filename
-        string filepath
-        string kind
-    }
-    ACTIVITY_LOG {
-        int id PK
-        int shop_id FK
-        int user_id FK
-        string action
-        string description
-    }
-    TELEGRAM_CODE {
-        int id PK
-        int shop_id FK
-        string telegram_id
-        string code_hash
-        datetime expires_at
-    }
-```
+### Flow 3 - Backup and import (ZIP includes real images)
+1. Export: the admin clicks Download ZIP. The backend scans every /uploads reference, copies the real files into an images folder, rewrites the JSON paths, and produces system_backup_*.zip.
+2. Import: the same ZIP is opened on another machine. The backend extracts the images folder into UPLOAD_DIR, rewrites the paths, and the shop plus images are fully restored.
+
+### Flow 4 - Telegram login and owner notifications
+1. The customer taps Login with Telegram.
+2. The backend asks the shop Telegram bot to send a 6-digit code to the customer Telegram account.
+3. The customer enters the code (or uses the login widget data), and the backend verifies it and returns a customer JWT.
+4. Orders are now linked to that Telegram account.
+5. When a payment is confirmed, the backend sends the full order and invoice summary to the shop Telegram, and the owner receives the new paid-order notification.
+
+### Flow 5 - Mobile storefront (Flutter) mirror
+1. The user opens the phone app and searches or browses shops.
+2. The app loads the shop, theme colors, categories, and products, then recolors the UI to the owner theme.
+3. The user opens a product, adds it to the cart, and checks out with an ABA Pay QR bottom sheet.
+4. The payment is verified and the receipt is saved.
+5. In Profile, My Orders shows the order list with PDF receipt download and a Telegram contact button.
 
 ---
+## 10. Mobile App (Flutter)
 
-## ðŸ”„ Core Flows
+Frontend_Mobile_APP is a Flutter storefront that mirrors the web storefront and uses the same FastAPI backend.
 
-### 1. Self-Serve Shop Registration + FREE Plan
+What it can do:
+- Open any shop by username and show the shop home with the owner theme colors.
+- Browse categories, product grids, and product detail (gallery, variations, quantity).
+- Cart plus ABA Pay (KHQR) checkout (create, open, verify polling).
+- Customer signup and signin with JWT, My Orders, and order tracking.
+- Create your own shop right from the phone with the FREE starter plan.
 
-```mermaid
-sequenceDiagram
-    participant U as Customer (Storefront)
-    participant F as Frontend_User
-    participant A as Backend API
-    participant DB as Database
-    participant ABA as ABA Pay (KHQR)
-
-    U->>F: Opens /create-shop
-    U->>F: Picks Starter (FREE 1 month) / Growth / Premium
-    F->>A: POST /api/plans/register {shop, owner, plan}
-    A->>DB: Create shop + owner account + plan order
-    alt Free plan (Starter)
-        A->>DB: Shop ACTIVE at $0, expires +30 days
-        A-->>F: {free: true, access_token}
-        F->>U: ðŸŽ‰ Shop open! auto-login + Dashboard button
-    else Paid plan (6 / 12 months)
-        A->>ABA: Build checkout (QR)
-        ABA-->>A: checkout_url + qr_code_url
-        A-->>F: {payment}
-        F->>ABA: Customer pays via ABA app
-        F->>A: POST /api/plans/confirm
-        A->>DB: Shop ACTIVE, expiry +N days
-        A-->>F: verified âœ…
-    end
+Run it:
 ```
-
-### 2. Customer Checkout + ABA Payment
-
-```mermaid
-sequenceDiagram
-    participant C as Customer
-    participant F as Frontend_User
-    participant A as Backend API
-    participant ABA as ABA Pay (KHQR)
-    participant T as Telegram
-
-    C->>F: Adds to cart â†’ Checkout
-    F->>A: POST /api/orders (create order)
-    F->>A: POST /api/payments/aba/create
-    A->>ABA: Build PayWay checkout
-    ABA-->>A: QR image + checkout URL
-    A-->>F: payment (qr_code_url, checkout_url)
-    C->>ABA: Scans QR / pays in ABA app
-    A->>ABA: Verify / webhook
-    ABA-->>A: confirmed âœ…
-    A->>A: Generate PDF invoice (Khmer + English)
-    A->>T: Send order + payment notification
-    A-->>F: verified â†’ Order success page ðŸŽ‰
-```
-
-### 3. Backup & Import (ZIP Includes Real Images)
-
-```mermaid
-flowchart LR
-    subgraph Export
-        B1["Admin clicks Download ZIP"] --> B2["Backend scans every /uploads/â€¦ ref"]
-        B2 --> B3["Copies real files into images/ folder"]
-        B3 --> B4["Rewrites JSON refs to images/â€¦"]
-        B4 --> B5["system_backup_*.zip"]
-    end
-
-    subgraph Import
-        I1["Same ZIP on another machine"] --> I2["Backend extracts images/"]
-        I2 --> I3["Files copied into UPLOAD_DIR"]
-        I3 --> I4["Refs rewritten to /uploads/â€¦"]
-        I4 --> I5["Shop + images fully restored âœ…"]
-    end
-
-    B5 -. portable .-> I1
-```
-
----
-
-### 4. Telegram Login + Owner Notifications
-
-```mermaid
-sequenceDiagram
-    participant C as Customer
-    participant F as Storefront / Mobile App
-    participant A as Backend API
-    participant T as Shop Telegram Bot
-    participant O as Shop Owner (Telegram)
-
-    C->>F: Tap Login with Telegram
-    F->>A: POST /api/auth/telegram/request-code
-    A->>T: send 6-digit code to customer Telegram
-    T-->>C: code (private chat)
-    C->>F: Enter code (or widget auth data)
-    F->>A: POST /api/auth/telegram/verify-code
-    A-->>F: customer JWT (orders linked to this Telegram account)
-
-    Note over A,T: When a payment is CONFIRMED...
-    A->>T: send full order + invoice summary
-    T->>O: new paid order notification
-```
-
-### 5. Mobile Storefront (Flutter) Mirror
-
-The Frontend_Mobile_APP mirrors the web storefront for phones; the same backend powers both.
-
-```mermaid
-sequenceDiagram
-    participant U as User (phone)
-    participant M as Frontend_Mobile_APP (Flutter)
-    participant A as Backend API
-
-    U->>M: Opens app, search / browse shops
-    M->>A: GET /api/shops/demo
-    A-->>M: shop + theme colors + categories + products
-    M->>U: shop UI recolored to the owner theme
-
-    U->>M: Product detail, Add to cart, Checkout
-    M->>A: POST /api/orders then POST /api/payments/aba/create
-    A-->>M: ABA Pay QR code (bottom sheet)
-    U->>M: Confirm payment
-    M->>A: order verified, receipt saved
-
-    U->>M: Profile, My Orders
-    M->>A: GET /api/customers/auth/orders
-    A-->>M: order list + PDF receipt download + Telegram contact
-```
-
-> Mobile notes: Khmer/English toggle, dark/light mode, and each shop renders with the owner own colors (shop.theme), exactly like the web.
-
----
-
-## ðŸ“± Mobile App (Flutter)
-
-A new **Flutter storefront** (`Frontend_Mobile_APP/`) that mirrors `Frontend_User`
-and uses the **same FastAPI backend**:
-
-- ðŸ” Open any shop by username, shop home with theme colors
-- ðŸ—‚ï¸ Categories, product grid, product detail (gallery, variations, quantity)
-- ðŸ§º Cart + **ABA Pay (KHQR)** checkout (create â†’ open â†’ verify polling)
-- ðŸ‘¤ Customer signup / signin (JWT), My Orders, track order
-- ðŸš€ **Create your own shop** right from the phone (FREE starter plan)
-
-```bash
 cd Frontend_Mobile_APP
 flutter pub get
-flutter run --dart-define=API_URL=http://10.0.2.2:8000
+flutter run --dart-define=API_URL=http://10.0.2.2:8000   (Android emulator)
 ```
 
-> Full details in [`Frontend_Mobile_APP/README.md`](Frontend_Mobile_APP/README.md).
+More details are inside Frontend_Mobile_APP/README.md.
 
 ---
 
-## ðŸ“ Project Structure
+## 11. Project Structure
 
 ```
 MiniShopCambodia-FullStackWeb
-â”œâ”€â”€ Backend_API/                  # FastAPI backend â€” ONE API for all frontends
-â”‚   â”œâ”€â”€ main.py                   # App entry, auto-migrations, static mounts, docs
-â”‚   â”œâ”€â”€ config.py                 # Config â€” every secret comes from env vars
-â”‚   â”œâ”€â”€ database.py               # SQLAlchemy engine + session
-â”‚   â”œâ”€â”€ models.py                 # ORM models (Shop, User, Product, Order, â€¦)
-â”‚   â”œâ”€â”€ schemas.py                # Pydantic request / response schemas
-â”‚   â”œâ”€â”€ security.py               # bcrypt, JWT, role guards
-â”‚   â”œâ”€â”€ seed.py                   # Seeds default admin + demo shop (fresh DB)
-â”‚   â”œâ”€â”€ .env.example              # Environment-variable template
-â”‚   â”œâ”€â”€ routers/                  # API endpoints by domain
-â”‚   â”‚   â”œâ”€â”€ auth.py               # login, telegram login, user registration
-â”‚   â”‚   â”œâ”€â”€ shops.py              # public shop lookup, admin CRUD, owner check
-â”‚   â”‚   â”œâ”€â”€ products.py           # product CRUD + public listing (search/sort)
-â”‚   â”‚   â”œâ”€â”€ categories.py         # category CRUD
-â”‚   â”‚   â”œâ”€â”€ orders.py             # order CRUD + POS orders
-â”‚   â”‚   â”œâ”€â”€ payments.py           # ABA Pay (KHQR) create / verify / test
-â”‚   â”‚   â”œâ”€â”€ reports.py            # sales / product / customer / stock reports
-â”‚   â”‚   â”œâ”€â”€ plans.py              # plans, register, upgrade, confirm, resellers
-â”‚   â”‚   â”œâ”€â”€ backup.py             # backup & import (ZIP with images)
-â”‚   â”‚   â”œâ”€â”€ uploads.py            # image upload
-â”‚   â”‚   â”œâ”€â”€ telegram.py           # Telegram bot + notifications
-â”‚   â”‚   â””â”€â”€ settings.py           # stats + platform settings
-â”‚   â”œâ”€â”€ services/
-â”‚   â”‚   â”œâ”€â”€ aba_service.py        # ABA Pay / KHQR integration
-â”‚   â”‚   â”œâ”€â”€ invoice_service.py    # PDF invoices (bilingual, theme color)
-â”‚   â”‚   â”œâ”€â”€ telegram_service.py   # Telegram helpers (safe public URLs)
-â”‚   â”‚   â”œâ”€â”€ backup_service.py     # ZIP-with-images backup / restore
-â”‚   â”‚   â””â”€â”€ qr_service.py         # QR image generation
-â”‚   â””â”€â”€ requirements.txt
-â”‚
-â”œâ”€â”€ Frontend_User/                # ðŸ›ï¸ Storefront + self-serve signup (port 3000)
-â”‚   â””â”€â”€ src/
-â”‚       â”œâ”€â”€ App.js                # Routes: /, /create-shop, /:username/*
-â”‚       â”œâ”€â”€ contexts/             # Shop, Cart, Customer, Owner, Theme
-â”‚       â”œâ”€â”€ components/           # Header, search bar, product cards/rows, slideshowâ€¦
-â”‚       â””â”€â”€ pages/                # HomePage, CreateShop, ShopHome, Products,
-â”‚                                 # ProductDetail, Checkout, OrderSuccess, MyOrders, Profile, About
-â”‚
-â”œâ”€â”€ Frontend_Admin/               # ðŸ‘¨â€ðŸ’¼ Platform admin panel (port 3001)
-â”‚   â””â”€â”€ src/pages/                # Dashboard (6 charts), Shops, Users, Resellers,
-â”‚                                 # ResellerDetail, Backup, ActivityLogs, Settings
-â”‚
-â”œâ”€â”€ Frontend_Dashboard_User/      # ðŸ§‘â€ðŸ’» Shop owner dashboard (port 3002)
-â”‚   â””â”€â”€ src/pages/                # Dashboard, POS, Products, Categories, Stock, Orders,
-â”‚                                 # Customers, Reports, Receipts, PaymentSettings,
-â”‚                                 # TelegramSettings, UpgradePlan, Backup, ShopSettings
-â”‚
-â”œâ”€â”€ Frontend_Reseller/            # ðŸ’¸ Reseller dashboard (port 3005)
-â”‚   â””â”€â”€ src/pages/                # Dashboard (charts), Shops, Commissions, Promo,
-â”‚                                 # Backup, Settings
-â”‚
-â””â”€â”€ Frontend_Mobile_APP/          # ðŸ“± Flutter storefront (Android / iOS)
-    â””â”€â”€ lib/
-        â”œâ”€â”€ main.dart             # App entry + theme wiring
-        â”œâ”€â”€ models/               # Shop, Product, Category, Customer, Order, Plan
-        â”œâ”€â”€ services/             # ApiClient + shop/product/customer/order services
-        â”œâ”€â”€ providers/            # Shop, Cart, Customer, Theme state
-        â”œâ”€â”€ screens/              # Home, ShopHome, Products, ProductDetail, Cart,
-        â”‚                         # Checkout, OrderSuccess, MyOrders, Auth, Profile, CreateShop
-        â””â”€â”€ widgets/              # ProductCard, CategoryChip, ShopHeader, QtyStepper
+|-- Backend_API/                FastAPI backend, one API for all frontends
+|   |-- main.py                 App entry, auto-migrations, static mounts, docs
+|   |-- config.py               Configuration; every secret comes from env vars
+|   |-- database.py             SQLAlchemy engine and session
+|   |-- models.py               ORM models (Shop, User, Product, Order, ...)
+|   |-- schemas.py              Pydantic request/response schemas
+|   |-- security.py             bcrypt, JWT, role guards
+|   |-- seed.py                 Seeds default admin and demo shop on a fresh DB
+|   |-- .env.example            Environment-variable template
+|   |-- routers/                API endpoints by domain
+|   |   |-- auth.py             Login, Telegram login, user registration
+|   |   |-- shops.py            Public shop lookup, admin CRUD, owner check
+|   |   |-- products.py         Product CRUD plus public listing
+|   |   |-- categories.py       Category CRUD
+|   |   |-- orders.py           Order CRUD and POS orders
+|   |   |-- payments.py         ABA Pay (KHQR) create/verify/test
+|   |   |-- reports.py          Sales, product, customer, stock reports
+|   |   |-- plans.py            Plans, register, upgrade, confirm, resellers
+|   |   |-- backup.py           Backup and import (ZIP with images)
+|   |   |-- uploads.py          Image upload
+|   |   |-- telegram.py         Telegram bot and notifications
+|   |   |-- settings.py         Stats and platform settings
+|   |-- services/               Business logic
+|   |   |-- aba_service.py      ABA Pay / KHQR integration
+|   |   |-- invoice_service.py  PDF invoices (bilingual, theme color)
+|   |   |-- pdf_service.py      Receipt PDF generation
+|   |   |-- telegram_service.py Telegram helpers
+|   |   |-- backup_service.py   ZIP-with-images backup and restore
+|   |   |-- qr_service.py       QR image generation
+|   |   |-- stock_service.py    Stock adjustment logic
+|   |-- requirements.txt
+|
+|-- Frontend_User/              Storefront plus self-serve signup (port 3000)
+|   |-- src/App.js              Routes: /, /create-shop, /:username/*
+|   |-- src/contexts/           Shop, Cart, Customer, Owner, Theme
+|   |-- src/components/         Header, search bar, product cards/rows, slideshow
+|   |-- src/pages/              HomePage, CreateShop, ShopHome, Products,
+|   |                           ProductDetail, Checkout, OrderSuccess,
+|   |                           MyOrders, Profile, About
+|
+|-- Frontend_Admin/             Platform admin panel (port 3001)
+|   |-- src/pages/              Dashboard (6 charts), Shops, Users, Resellers,
+|   |                           ResellerDetail, Backup, ActivityLogs, Settings
+|
+|-- Frontend_Dashboard_User/    Shop owner dashboard (port 3002)
+|   |-- src/pages/              Dashboard, POS, Products, Categories, Stock,
+|   |                           Orders, Customers, Reports, Receipts,
+|   |                           PaymentSettings, TelegramSettings,
+|   |                           UpgradePlan, Backup, ShopSettings
+|
+|-- Frontend_Reseller/          Reseller dashboard (port 3005)
+|   |-- src/pages/              Dashboard (charts), Shops, Commissions, Promo,
+|   |                           Backup, Settings
+|
+|-- Frontend_Mobile_APP/        Flutter storefront (Android and iOS)
+    |-- lib/main.dart           App entry and theme wiring
+    |-- lib/models/             Shop, Product, Category, Customer, Order, Plan
+    |-- lib/services/           ApiClient plus shop/product/customer/order services
+    |-- lib/providers/          Shop, Cart, Customer, Theme state
+    |-- lib/screens/            Home, ShopHome, Products, ProductDetail, Cart,
+    |                           Checkout, OrderSuccess, MyOrders, Auth,
+    |                           Profile, CreateShop
+    |-- lib/widgets/            ProductCard, CategoryChip, ShopHeader, QtyStepper
 ```
 
 ---
+## 12. Quick Start
 
-## ðŸš€ Quick Start
+### Prerequisites
+- Python 3.10 or newer
+- Node.js 16 or newer
+- A terminal (Git Bash, PowerShell, or VS Code terminal)
 
-### 0. Prerequisites
-- **Python 3.10+** and **Node.js 16+**
-- A terminal (Git Bash / PowerShell / VS Code terminal)
+All secrets are loaded from environment variables. The defaults in the code are safe placeholders. Copy the template into a local .env file and never commit real credentials.
 
-> All secrets are loaded from **environment variables**. The defaults in the code are safe placeholders â€” copy the template into a local `.env` and **never commit real credentials**.
-
-### 1. Clone
-```bash
+### Step 1 - Clone the repository
+```
 git clone https://github.com/ThyMuoyhak/MiniShopCambodia-FullStackWeb.git
 cd MiniShopCambodia-FullStackWeb
 ```
 
-### 2. Start the Backend API âš™ï¸
-```bash
+### Step 2 - Start the backend API
+```
 cd Backend_API
 python -m venv venv
 # Windows:
@@ -574,373 +368,309 @@ venv\Scripts\activate
 source venv/bin/activate
 
 pip install -r requirements.txt
-cp .env.example .env          # then edit values (see the env table below)
+cp .env.example .env    # then edit the values (see the environment table below)
 uvicorn main:app --reload --port 8000
 ```
-- âœ… Tables are created + the default **admin** account is seeded on first start.
-- ðŸ“„ Interactive API docs: **http://localhost:8000/docs**
+- Tables are created automatically and the default admin account is seeded on the first start.
+- Interactive API docs are available at http://localhost:8000/docs
 
-### 3. Start the Storefront â€” Frontend_User ðŸ›ï¸ (3000)
-```bash
+### Step 3 - Start the storefront (Frontend_User, port 3000)
+```
 cd Frontend_User
 npm install
 npm start
 ```
 
-### 4. Start the Platform Admin â€” Frontend_Admin ðŸ‘¨â€ðŸ’¼ (3001)
-```bash
+### Step 4 - Start the platform admin (Frontend_Admin, port 3001)
+```
 cd Frontend_Admin
 npm install
-npm start          # login as admin
+npm start        # login as admin
 ```
 
-### 5. Start the Shop Dashboard â€” Frontend_Dashboard_User ðŸ§‘â€ðŸ’» (3002)
-```bash
+### Step 5 - Start the shop owner dashboard (Frontend_Dashboard_User, port 3002)
+```
 cd Frontend_Dashboard_User
 npm install
-npm start          # login as a shop owner (demo)
+npm start        # login as a shop owner (demo)
 ```
 
-### 6. Start the Reseller Dashboard â€” Frontend_Reseller ðŸ’¸ (3005)
-```bash
+### Step 6 - Start the reseller dashboard (Frontend_Reseller, port 3005)
+```
 cd Frontend_Reseller
 npm install
-npm start          # login as a reseller
+npm start        # login as a reseller
 ```
 
-### 7. Default Accounts (Seeded on a Fresh Database)
+### Step 7 - Default accounts (seeded on a fresh database)
 | Role | Username | Password | Login at |
 |---|---|---|---|
-| Platform admin | `admin` | `ChangeMe123!` | Frontend_Admin :3001 |
-| Shop owner (demo) | `demo` | `demo123` | Frontend_Dashboard_User :3002 |
-| Shop owner (self-serve) | *your username* | *you choose* | created via `/create-shop` |
+| Platform admin | admin | ChangeMe123! | Frontend_Admin :3001 |
+| Shop owner (demo) | demo | demo123 | Frontend_Dashboard_User :3002 |
+| Shop owner (self-serve) | your username | you choose | created via /create-shop |
 
-> âš ï¸ **Change these in production** (env vars + dashboard settings).
+Change these passwords in production.
 
-### 8. Try the Full Flow ðŸŽ¯
-1. Storefront (**3000**) â†’ **Create your own shop** (Starter = FREE 1 month) â†’ shop opens instantly
-2. Login to the shop dashboard (**3002**) â†’ add products, categories, logo, theme
-3. Back on the storefront â†’ browse â†’ **checkout with ABA Pay (sandbox)**
-4. Admin (**3001**) â†’ manage shops / resellers / backups â†’ watch the live charts
-
----
-
-## ðŸ”‘ Environment Variables
-
-### Backend (`Backend_API/.env`)
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `DATABASE_URL` | `sqlite:///data/minishop.db` | SQLite for dev; `postgresql://â€¦` for production |
-| `DATA_DIR` | `./data` | Where the DB lives (use a persistent disk in prod) |
-| `UPLOAD_DIR` | `./uploads` | Product images, logos, QR codes, receipts |
-| `BACKUP_DIR` | `./backups` | Backup / export files |
-| `BASE_URL` | `http://localhost:8000` | Public backend URL (used in receipts/links) |
-| `MINISHOP_SECRET_KEY` | dev placeholder | **JWT signing key â€” change in production!** |
-| `DEFAULT_ADMIN_USERNAME` | `admin` | Seed admin username |
-| `DEFAULT_ADMIN_PASSWORD` | `ChangeMe123!` | Seed admin password |
-| `DEFAULT_ADMIN_EMAIL` | `admin@example.com` | Seed admin email |
-| `TELEGRAM_BOT_TOKEN` | *(empty)* | Platform-level Telegram bot token |
-| `PLATFORM_SHOP_USERNAME` | `demo` | Which shop collects plan payments (ABA) |
-| `STORE_URL` | `http://localhost:3000` | Storefront URL used in referral links |
-| `DASHBOARD_URL` | `http://localhost:3002` | Shop-dashboard URL (áž•áŸ’áž‘áž¶áŸ†áž„áž‚áŸ’ážšáž”áŸ‹áž‚áŸ’ážšáž„ button) |
-| `CORS_ORIGINS` | `localhost:3000,localhost:3001,localhost:3002,localhost:3005` | Extra comma-separated CORS origins |
-| `EDGE_PATH` / `CHROME_PATH` | *(empty)* | Path to Edge/Chromium for high-quality PDF invoices |
-| ABA (PayWay/KHQR) | via Payment Settings UI | Profile ID + Secret Key stored per-shop (never hard-coded) |
-
-### Frontends (`Frontend_User/.env.local`, etc.)
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `REACT_APP_API_URL` | `http://localhost:8000` | Backend API base URL |
-| `REACT_APP_DASHBOARD_URL` | `http://localhost:3002` | Dashboard URL for the "áž•áŸ’áž‘áž¶áŸ†áž„áž‚áŸ’ážšáž”áŸ‹áž‚áŸ’ážšáž„" button |
+### Step 8 - Try the full flow
+1. On the storefront (3000), create your own shop (Starter plan is free for 1 month). The shop opens instantly.
+2. Log in to the shop dashboard (3002), then add products, categories, logo, and theme.
+3. Back on the storefront, browse and check out with ABA Pay (sandbox mode).
+4. On the admin panel (3001), manage shops, resellers, and backups, and watch the live charts.
 
 ---
 
-## ðŸ—„ï¸ Using PostgreSQL Instead of SQLite
+## 13. Environment Variables
 
-The app ships with **SQLite** so you can run it with zero setup. For production, **PostgreSQL** is recommended.
+### Backend (.env file in Backend_API)
+| Variable | Default | Purpose |
+|---|---|---|
+| DATABASE_URL | sqlite:///data/minishop.db | SQLite for development; postgresql://... for production |
+| DATA_DIR | ./data | Where the database lives (use a persistent disk in production) |
+| UPLOAD_DIR | ./uploads | Product images, logos, QR codes, receipts |
+| BACKUP_DIR | ./backups | Backup and export files |
+| BASE_URL | http://localhost:8000 | Public backend URL used in receipts and links |
+| MINISHOP_SECRET_KEY | dev placeholder | JWT signing key; change in production |
+| DEFAULT_ADMIN_USERNAME | admin | Seed admin username |
+| DEFAULT_ADMIN_PASSWORD | ChangeMe123! | Seed admin password |
+| DEFAULT_ADMIN_EMAIL | admin@example.com | Seed admin email |
+| TELEGRAM_BOT_TOKEN | (empty) | Platform Telegram bot token |
+| PLATFORM_SHOP_USERNAME | demo | Which shop collects plan payments (ABA) |
+| STORE_URL | http://localhost:3000 | Storefront URL used in referral links |
+| DASHBOARD_URL | http://localhost:3002 | Shop dashboard URL for the Dashboard button |
+| CORS_ORIGINS | localhost:3000,3001,3002,3005 | Comma-separated extra CORS origins |
+| EDGE_PATH / CHROME_PATH | (empty) | Path to Edge/Chromium for high-quality PDF invoices |
 
-### 1. Create the Database
-```sql
+ABA (PayWay/KHQR) profile ID and secret key are stored per shop in the Payment Settings UI. They are never hard-coded.
+
+### Frontends (Frontend_User/.env.local and similar)
+| Variable | Default | Purpose |
+|---|---|---|
+| REACT_APP_API_URL | http://localhost:8000 | Backend API base URL |
+| REACT_APP_DASHBOARD_URL | http://localhost:3002 | Dashboard URL used for the Dashboard button |
+
+---
+
+## 14. Using PostgreSQL Instead of SQLite
+
+The app ships with SQLite so you can run it with zero setup. For production, PostgreSQL is recommended.
+
+1. Create the database:
+```
 CREATE DATABASE minishop;
 CREATE USER minishop_user WITH PASSWORD 'your-strong-password';
 GRANT ALL PRIVILEGES ON DATABASE minishop TO minishop_user;
 ```
-
-### 2. Set `DATABASE_URL` in `.env`
-```env
+2. Set DATABASE_URL in .env:
+```
 DATABASE_URL=postgresql://minishop_user:your-strong-password@localhost:5432/minishop
 ```
-
-### 3. Install PostgreSQL Driver
-```bash
+3. Install the PostgreSQL driver:
+```
 pip install psycopg2-binary
 ```
-
-### 4. Restart the Backend
-```bash
+4. Restart the backend:
+```
 uvicorn main:app --reload --port 8000
 ```
 
 ---
+## 15. Complete API Reference
 
-## ðŸ”Œ Complete API Reference
+All endpoints are grouped by area. When the backend is running, the interactive docs are at http://localhost:8000/docs
 
-All endpoints are grouped by area. Interactive docs: **http://localhost:8000/docs**
+Access legend: Public = anyone; User = any logged-in user; Admin = platform admin; Owner = shop owner/staff; Reseller = reseller account.
 
-> Access legend: ðŸ”“ public Â· ðŸ” any logged-in user Â· ðŸ‘¨â€ðŸ’¼ admin Â· ðŸ§‘â€ðŸ’¼ shop owner/staff Â· ðŸ’¸ reseller
+### 1. Authentication (/api/auth)
+- POST /auth/login - login admin/shop owner/staff (bcrypt + JWT + lockout)
+- POST /auth/login/oauth2 - OAuth2-compatible login
+- POST /auth/register - register a dashboard user
+- POST /auth/change-password - change your own password (User)
+- GET /auth/me - current user profile (User)
+- GET /auth/users - list platform users (Admin)
+- PUT /auth/users/{user_id} - edit user role/commission/status (Admin)
+- DELETE /auth/users/{user_id} - delete a user (Admin)
+- POST /auth/telegram/login - start Telegram login
+- POST /auth/telegram/request-code - request a login code
+- POST /auth/telegram/verify-code - verify the code and return a JWT
+- GET /auth/telegram/me - Telegram-linked profile (User)
 
-### 1. Authentication â€” `/api/auth`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| POST | `/auth/login` | ðŸ”“ | Login admin / shop owner / staff (bcrypt + JWT + lockout) |
-| POST | `/auth/login/oauth2` | ðŸ”“ | OAuth2-compatible login |
-| POST | `/auth/register` | ðŸ”“ | Register a dashboard user |
-| POST | `/auth/change-password` | ðŸ” | Change own password |
-| GET | `/auth/me` | ðŸ” | Current user profile |
-| GET | `/auth/users` | ðŸ‘¨â€ðŸ’¼ | List platform users |
-| PUT | `/auth/users/{user_id}` | ðŸ‘¨â€ðŸ’¼ | Edit user (role, commission, status) |
-| DELETE | `/auth/users/{user_id}` | ðŸ‘¨â€ðŸ’¼ | Delete user |
-| POST | `/auth/telegram/login` | ðŸ”“ | Start Telegram login (bot link) |
-| POST | `/auth/telegram/request-code` | ðŸ”“ | Request a login code |
-| POST | `/auth/telegram/verify-code` | ðŸ”“ | Verify code â†’ returns JWT |
-| GET | `/auth/telegram/me` | ðŸ” | Telegram-linked profile |
+### 2. Shops (/api/shops)
+- GET /shops/{username} - public shop lookup (Public)
+- GET /shops/public/{shop_id} - public shop by id (Public)
+- GET /shops - admin list of all shops (Admin)
+- GET /shops/{shop_id}/detail - full shop detail (Owner/Admin)
+- GET /shops/{shop_id}/owner - returns is_owner to verify the Dashboard button (User)
+- GET /shops/{username}/qr - shop share QR image (Public)
+- POST /shops - create a shop (Admin)
+- PUT /shops/{shop_id}/update - update shop (Owner/Admin)
+- PUT /shops/{shop_id}/status - activate or suspend (Admin)
+- DELETE /shops/{shop_id} - delete a shop (Admin)
+- POST /shops/{shop_id}/set-expiry - set plan expiry manually (Admin)
+- POST /shops/{shop_id}/set-limits - override product/category limits (Admin)
 
-### 2. Shops â€” `/api/shops`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/shops/{username}` | ðŸ”“ | Public shop lookup (storefront) |
-| GET | `/shops/public/{shop_id}` | ðŸ”“ | Public shop by ID |
-| GET | `/shops` | ðŸ‘¨â€ðŸ’¼ | Admin list of all shops |
-| GET | `/shops/{shop_id}/detail` | ðŸ§‘â€ðŸ’¼/ðŸ‘¨â€ðŸ’¼ | Full shop detail (settings, counts, owner) |
-| GET | `/shops/{shop_id}/owner` | ðŸ” | `{ is_owner }` â€” server-verifies the Dashboard button |
-| GET | `/shops/{username}/qr` | ðŸ”“ | Shop share-QR image |
-| POST | `/shops` | ðŸ‘¨â€ðŸ’¼ | Admin create shop |
-| PUT | `/shops/{shop_id}/update` | ðŸ§‘â€ðŸ’¼/ðŸ‘¨â€ðŸ’¼ | Update shop (name, logo, banner, theme, socials) |
-| PUT | `/shops/{shop_id}/status` | ðŸ‘¨â€ðŸ’¼ | Activate / suspend a shop |
-| DELETE | `/shops/{shop_id}` | ðŸ‘¨â€ðŸ’¼ | Delete a shop |
-| POST | `/shops/{shop_id}/set-expiry` | ðŸ‘¨â€ðŸ’¼ | Set plan expiry manually |
-| POST | `/shops/{shop_id}/set-limits` | ðŸ‘¨â€ðŸ’¼ | Override product/category limits |
+### 3. Plans and Resellers (/api/plans)
+- GET /plans - available plans plus free offer and expiry (Public)
+- POST /plans/register - self-serve shop and plan registration (returns owner JWT) (Public)
+- POST /plans/confirm - confirm plan payment or free activation (Public)
+- POST /plans/upgrade - upgrade or extend the shop plan (Owner)
+- GET /plans/charts - platform dashboard chart data (Admin)
+- GET /plans/resellers - list resellers (Admin)
+- POST /plans/resellers - create reseller (Admin)
+- GET/PUT/DELETE /plans/resellers/{id} - reseller detail, update, delete (Admin)
+- GET /plans/resellers/{id}/customers - shops registered by this reseller (Admin)
+- GET /plans/reseller/me - reseller own profile and stats (Reseller)
+- POST /plans/reseller/promo - create promo code (Reseller)
+- GET /plans/reseller/export - export reseller shops to Excel (Reseller)
+- POST /plans/reseller/import - import reseller shops (Reseller)
 
-### 3. Plans & Resellers â€” `/api/plans`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/plans` | ðŸ”“ | Available plans + free offer + expiry |
-| POST | `/plans/register` | ðŸ”“ | Self-serve shop + plan registration (returns owner JWT) |
-| POST | `/plans/confirm` | ðŸ”“ | Confirm plan payment / free activation |
-| POST | `/plans/upgrade` | ðŸ§‘â€ðŸ’¼ | Upgrade / extend the shop plan |
-| GET | `/plans/charts` | ðŸ‘¨â€ðŸ’¼ | Platform dashboard charts data |
-| GET | `/plans/resellers` | ðŸ‘¨â€ðŸ’¼ | List resellers |
-| POST | `/plans/resellers` | ðŸ‘¨â€ðŸ’¼ | Create reseller |
-| GET | `/plans/resellers/{id}` | ðŸ‘¨â€ðŸ’¼ | Reseller detail |
-| PUT | `/plans/resellers/{id}` | ðŸ‘¨â€ðŸ’¼ | Update reseller |
-| DELETE | `/plans/resellers/{id}` | ðŸ‘¨â€ðŸ’¼ | Delete reseller |
-| GET | `/plans/resellers/{id}/customers` | ðŸ‘¨â€ðŸ’¼ | Shops registered by this reseller |
-| GET | `/plans/reseller/me` | ðŸ’¸ | Reseller own profile + stats |
-| POST | `/plans/reseller/promo` | ðŸ’¸ | Create promo code |
-| GET | `/plans/reseller/export` | ðŸ’¸ | Export reseller shops (Excel) |
-| POST | `/plans/reseller/import` | ðŸ’¸ | Import reseller shops |
+### 4. Products (/api/products) and Categories (/api/categories)
+- GET /products/public - public listing with search/category/sort/sale (Public)
+- GET /products/{id}/public - public product detail (Public)
+- GET /products - own products with category names (Owner)
+- GET /products/{product_id} - one product (Owner)
+- POST /products - create product with images, variations, attributes (Owner)
+- PUT /products/{product_id} - update product (Owner)
+- POST /products/{product_id}/stock - adjust stock up or down (Owner)
+- DELETE /products/{product_id} - delete product (Owner)
+- GET /categories/public - public categories (Public)
+- GET/POST /categories - list and create own categories (Owner)
+- PUT/DELETE /categories/{category_id} - update and delete a category (Owner)
 
-### 4. Products â€” `/api/products`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/products/public` | ðŸ”“ | Public listing (search, category, sort, sale) |
-| GET | `/products/{id}/public` | ðŸ”“ | Public product detail |
-| GET | `/products` | ðŸ§‘â€ðŸ’¼ | Own products (with category name) |
-| GET | `/products/{product_id}` | ðŸ§‘â€ðŸ’¼ | One product |
-| POST | `/products` | ðŸ§‘â€ðŸ’¼ | Create product (images, variations, attributes) |
-| PUT | `/products/{product_id}` | ðŸ§‘â€ðŸ’¼ | Update product |
-| POST | `/products/{product_id}/stock` | ðŸ§‘â€ðŸ’¼ | Adjust stock (+/-) |
-| DELETE | `/products/{product_id}` | ðŸ§‘â€ðŸ’¼ | Delete product |
+### 5. Orders (/api/orders)
+- POST /orders - create a customer order (requires customer JWT) (Public)
+- POST /orders/pos - POS sale for walk-in customers (Owner)
+- POST /orders/public/history - customer order history by phone (Public)
+- GET /orders/public/track - track order status by order number (Public)
+- GET /orders - own orders with status filter (Owner)
+- GET /orders/all - all platform orders (Admin)
+- GET /orders/{order_id} - order detail (Owner/Admin)
+- PUT /orders/{order_id}/status - update order status (Owner)
+- GET /orders/{order_id}/receipt - PDF receipt, bilingual with theme color (Owner)
+- DELETE /orders/{order_id} - delete an order (Owner)
 
-**Categories â€” `/api/categories`**
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/categories/public` | ðŸ”“ | Public categories |
-| GET | `/categories` | ðŸ§‘â€ðŸ’¼ | Own categories |
-| POST | `/categories` | ðŸ§‘â€ðŸ’¼ | Create category |
-| PUT | `/categories/{category_id}` | ðŸ§‘â€ðŸ’¼ | Update category |
-| DELETE | `/categories/{category_id}` | ðŸ§‘â€ðŸ’¼ | Delete category |
+### 6. Payments (/api/payments)
+- POST /payments/aba/create - create ABA Pay (KHQR) checkout plus QR PNG (Public)
+- POST /payments/aba/verify - verify an ABA payment by transaction id (Public)
+- POST /payments/aba/webhook - ABA webhook that marks the order paid and sends Telegram alerts (Public)
+- POST /payments/aba/test - sandbox test payment that auto-succeeds (Owner)
+- GET /payments/aba/status - payment status / whether ABA is configured (Public)
+- GET /payments/aba/success - checkout success landing (Public)
+- GET /payments/aba/error - checkout error landing (Public)
 
-### 5. Orders â€” `/api/orders`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| POST | `/orders` | ðŸ”“ | Create a customer order (requires customer JWT) |
-| POST | `/orders/pos` | ðŸ§‘â€ðŸ’¼ | POS sale (walk-in customer) |
-| POST | `/orders/public/history` | ðŸ”“ | Customer order history (by phone) |
-| GET | `/orders/public/track` | ðŸ”“ | Track order status by order number |
-| GET | `/orders` | ðŸ§‘â€ðŸ’¼ | Own orders (filter by status) |
-| GET | `/orders/all` | ðŸ‘¨â€ðŸ’¼ | All platform orders |
-| GET | `/orders/{order_id}` | ðŸ§‘â€ðŸ’¼/ðŸ‘¨â€ðŸ’¼ | Order detail |
-| PUT | `/orders/{order_id}/status` | ðŸ§‘â€ðŸ’¼ | Update order status |
-| GET | `/orders/{order_id}/receipt` | ðŸ”“ | PDF receipt (bilingual, theme color) |
-| DELETE | `/orders/{order_id}` | ðŸ§‘â€ðŸ’¼ | Delete order |
+### 7. Backup (/api/backup)
+- GET /backup/admin/export - export system backup JSON/ZIP-with-images/Excel (Admin)
+- POST /backup/admin/import - import system backup, ZIP restores images too (Admin)
+- POST /backup/admin/create - create a backup file on the server (Admin)
+- GET /backup/admin/history - backup history list (Admin)
+- GET /backup/admin/download - download a backup file (Admin)
+- GET /backup/shop/{shop_id}/export - export a single shop (Owner/Admin)
+- POST /backup/shop/{shop_id}/create - create a shop backup on the server (Owner/Admin)
+- POST /backup/shop/{shop_id}/import - import into a shop with images (Owner/Admin)
 
-### 6. Payments â€” `/api/payments`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| POST | `/payments/aba/create` | ðŸ”“ | Create ABA Pay (KHQR) checkout + QR PNG |
-| POST | `/payments/aba/verify` | ðŸ”“ | Verify an ABA payment by transaction ID |
-| POST | `/payments/aba/webhook` | ðŸ”“ | ABA webhook â†’ mark order paid + Telegram alert |
-| POST | `/payments/aba/test` | ðŸ§‘â€ðŸ’¼ | Sandbox test payment (auto-succeeds) |
-| GET | `/payments/aba/status` | ðŸ”“ | Payment status / is ABA configured |
-| GET | `/payments/aba/success` | ðŸ”“ | Checkout success landing |
-| GET | `/payments/aba/error` | ðŸ”“ | Checkout error landing |
+### 8. Reports (/api/reports)
+- GET /reports/overview - dashboard stats (sales, orders, products, low stock) (Owner)
+- GET /reports/sales - sales chart data by day/month range (Owner)
+- GET /reports/products - best-selling products (Owner)
+- GET /reports/customers - top customers (Owner)
+- GET /reports/stock - stock level report (Owner)
+- GET /reports/sales/export - export sales to Excel/PDF (Owner)
 
-### 7. Backup â€” `/api/backup`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/backup/admin/export` | ðŸ‘¨â€ðŸ’¼ | Export system backup (JSON / ZIP-with-images / Excel) |
-| POST | `/backup/admin/import` | ðŸ‘¨â€ðŸ’¼ | Import system backup (ZIP restores images too) |
-| POST | `/backup/admin/create` | ðŸ‘¨â€ðŸ’¼ | Create a backup file on the server |
-| GET | `/backup/admin/history` | ðŸ‘¨â€ðŸ’¼ | Backup history list |
-| GET | `/backup/admin/download` | ðŸ‘¨â€ðŸ’¼ | Download a backup file |
-| GET | `/backup/shop/{shop_id}/export` | ðŸ§‘â€ðŸ’¼/ðŸ‘¨â€ðŸ’¼ | Export a single shop |
-| POST | `/backup/shop/{shop_id}/create` | ðŸ§‘â€ðŸ’¼/ðŸ‘¨â€ðŸ’¼ | Create shop backup on the server |
-| POST | `/backup/shop/{shop_id}/import` | ðŸ§‘â€ðŸ’¼/ðŸ‘¨â€ðŸ’¼ | Import into a shop (with images) |
+### 9. Customers (/api/customers)
+- POST /customers/auth/signup - customer self-registration (Public)
+- POST /customers/auth/signin - customer login by username/email/phone (Public)
+- GET /customers/auth/me - customer profile (User)
+- PUT /customers/auth/me - update profile (User)
+- POST /customers/auth/change-password - change password (User)
+- GET /customers/auth/orders - my orders (User)
+- GET /customers - own shop customers (Owner)
+- GET /customers/{customer_id} - customer detail (Owner)
+- POST /customers - add a customer manually (Owner)
+- PUT /customers/{customer_id} - update a customer (Owner)
+- DELETE /customers/{customer_id} - delete a customer (Owner)
 
-### 8. Reports â€” `/api/reports`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/reports/overview` | ðŸ§‘â€ðŸ’¼ | Dashboard stats (sales, orders, products, low stock) |
-| GET | `/reports/sales` | ðŸ§‘â€ðŸ’¼ | Sales chart data (day/month range) |
-| GET | `/reports/products` | ðŸ§‘â€ðŸ’¼ | Best-selling products |
-| GET | `/reports/customers` | ðŸ§‘â€ðŸ’¼ | Top customers |
-| GET | `/reports/stock` | ðŸ§‘â€ðŸ’¼ | Stock level report |
-| GET | `/reports/sales/export` | ðŸ§‘â€ðŸ’¼ | Export sales (Excel/PDF) |
+### 10. Telegram (/api/telegram)
+- POST /telegram/setwebhook - set the bot webhook (Owner)
+- POST /telegram/webhook/{token} - bot webhook receiver (Public)
+- GET /telegram/settings - bot settings for this shop (Owner)
+- POST /telegram/test - send a test message (Owner)
+- POST /telegram/stock-alert - trigger a low-stock alert (Owner)
+- GET /telegram/activity - Telegram activity log (Admin)
 
-### 9. Customers â€” `/api/customers`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| POST | `/customers/auth/signup` | ðŸ”“ | Customer self-registration |
-| POST | `/customers/auth/signin` | ðŸ”“ | Customer login (username, email or phone) |
-| GET | `/customers/auth/me` | ðŸ” | Customer profile |
-| PUT | `/customers/auth/me` | ðŸ” | Update profile |
-| POST | `/customers/auth/change-password` | ðŸ” | Change password |
-| GET | `/customers/auth/orders` | ðŸ” | My orders |
-| GET | `/customers` | ðŸ§‘â€ðŸ’¼ | Own shop's customers |
-| GET | `/customers/{customer_id}` | ðŸ§‘â€ðŸ’¼ | Customer detail |
-| POST | `/customers` | ðŸ§‘â€ðŸ’¼ | Add customer manually |
-| PUT | `/customers/{customer_id}` | ðŸ§‘â€ðŸ’¼ | Update customer |
-| DELETE | `/customers/{customer_id}` | ðŸ§‘â€ðŸ’¼ | Delete customer |
+### 11. Settings and Stats (/api/settings)
+- GET /settings - platform settings (Admin)
+- POST /settings - update platform settings, e.g. registration toggle (Admin)
+- GET /settings/platform - public platform info (Public)
+- GET /settings/stats - platform stats (Admin)
 
-### 10. Telegram â€” `/api/telegram`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| POST | `/telegram/setwebhook` | ðŸ§‘â€ðŸ’¼ | Set bot webhook |
-| POST | `/telegram/webhook/{token}` | ðŸ”“ | Bot webhook receiver |
-| GET | `/telegram/settings` | ðŸ§‘â€ðŸ’¼ | Bot settings for this shop |
-| POST | `/telegram/test` | ðŸ§‘â€ðŸ’¼ | Send test message |
-| POST | `/telegram/stock-alert` | ðŸ§‘â€ðŸ’¼ | Trigger low-stock alert |
-| GET | `/telegram/activity` | ðŸ‘¨â€ðŸ’¼ | Telegram activity log |
+### 12. Uploads (/api/uploads)
+- POST /uploads - upload a general image (Owner)
+- POST /uploads/product - upload a product image (Owner)
 
-### 11. Settings & Stats â€” `/api/settings`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| GET | `/settings` | ðŸ‘¨â€ðŸ’¼ | Platform settings |
-| POST | `/settings` | ðŸ‘¨â€ðŸ’¼ | Update platform settings (registration toggle, etc.) |
-| GET | `/settings/platform` | ðŸ”“ | Public platform info |
-| GET | `/settings/stats` | ðŸ‘¨â€ðŸ’¼ | Platform stats |
+---
+## 16. Deployment Notes
 
-### 12. Uploads â€” `/api/uploads`
-| Method | Endpoint | Access | Purpose |
-|---|---|---|---|
-| POST | `/uploads` | ðŸ§‘â€ðŸ’¼ | Upload a general image |
-| POST | `/uploads/product` | ðŸ§‘â€ðŸ’¼ | Upload a product image |
+Backend:
+- Deploy to Render, Railway, or a VPS.
+- Set the environment variables from the table above and use PostgreSQL.
+- Use a persistent disk for DATA_DIR, UPLOAD_DIR, and BACKUP_DIR.
+- Set BASE_URL to the public backend URL and CORS_ORIGINS to your frontend domains.
+
+Frontends:
+- Deploy to Netlify or Vercel with npm run build.
+- Set REACT_APP_API_URL to your deployed backend URL.
+
+Payments and PDFs:
+- Fill in the ABA Pay profile ID and secret key in each shop Payment Settings (sandbox first).
+- Install Edge or Chromium on the server and set EDGE_PATH or CHROME_PATH for high-quality PDF invoices.
 
 ---
 
-## â˜ï¸ Deployment Notes
+## 17. Suggested Roadmap to Continue Building
 
-- **Backend â†’ Render / Railway / VPS**
-  - Set the env vars from the table above (use PostgreSQL)
-  - Use a **persistent disk** for `DATA_DIR`, `UPLOAD_DIR`, `BACKUP_DIR`
-  - Set `BASE_URL` to your public backend URL and `CORS_ORIGINS` to your frontend domains
-- **Frontends â†’ Netlify / Vercel**: `npm run build`, set `REACT_APP_API_URL` to your deployed backend
-- **ABA Pay (KHQR):** fill Profile ID + Secret Key in each shop's **Payment Settings** (sandbox first)
-- **PDF quality:** install Edge/Chromium on the server and set `EDGE_PATH`/`CHROME_PATH`
+The project is a solid foundation, not a finished product. Good next steps:
 
----
-
-## ðŸ’¡ Suggested Roadmap to Continue Building
-
-The project is a **solid foundation**, not a finished product â€” here are great ways to keep upskilling:
-
-- ðŸ“¦ **Dockerize everything** â€” one `docker-compose.yml` for backend + PostgreSQL + 4 frontends
-- ðŸ§ª **Add automated tests** â€” pytest for the API, Jest/RTL for the React apps
-- ðŸ” **Add a search engine** â€” Elasticsearch / Meilisearch for instant product search
-- ðŸ’¬ **Chat & notifications** â€” live order notifications (WebSockets / SSE), customer support chat
-- ðŸŒ **Multi-currency & i18n files** â€” expand Khmer/English translations
-- ðŸ›’ **More payment gateways** â€” Wing, ACLEDA, Bakong, Stripe, PayPal
-- âœ… **Mobile app** â€” Flutter storefront **done** (`Frontend_Mobile_APP`), reusing the same API
-- ðŸ” **2FA** â€” email/SMS OTP, TOTP authenticator app
-- ðŸ“Š **A/B testing & analytics** â€” funnel tracking for the storefront
+- Dockerize everything with a single docker-compose file for backend, PostgreSQL, and the frontends.
+- Add automated tests (pytest for the API, Jest/React Testing Library for the React apps).
+- Add a search engine such as Elasticsearch or Meilisearch for instant product search.
+- Add live chat and notifications with WebSockets or Server-Sent Events.
+- Expand multi-currency and i18n translation files beyond Khmer and English.
+- Add more payment gateways such as Wing, ACLEDA, Bakong, Stripe, or PayPal.
+- The Flutter mobile app is already done and reuses the same API.
+- Add two-factor authentication (email/SMS OTP or a TOTP app).
+- Add A/B testing and analytics funnel tracking for the storefront.
 
 ---
 
-## ðŸ¤ Contributing
+## 18. Contributing
 
-We welcome contributions! Please follow these steps:
+Contributions are welcome. Please follow these steps:
 
-1. **Fork** the repository
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Commit your changes**: `git commit -m 'Add amazing feature'`
-4. **Push to the branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request**
+1. Fork the repository.
+2. Create a feature branch: git checkout -b feature/amazing-feature
+3. Commit your changes: git commit -m "Add amazing feature"
+4. Push to the branch: git push origin feature/amazing-feature
+5. Open a Pull Request.
 
-### Guidelines
-- Follow existing code style and architecture
-- Write clear commit messages
-- Update documentation as needed
-- Test your changes locally before submitting
-
----
-
-## ðŸ™ Support the Project
-
-- â­ **Star this repo** and share it with other learners
-- ðŸ’¬ **Questions / ideas** â†’ Telegram [t.me/thymuoyhak](https://t.me/thymuoyhak)
-- ðŸŒ **Try it now** â†’ clone the repo and run it locally (see Quick Start)
+Guidelines:
+- Follow the existing code style and architecture.
+- Write clear commit messages.
+- Update documentation when needed.
+- Test your changes locally before submitting.
 
 ---
 
-## âš ï¸ Disclaimer
+## 19. Disclaimer and Full License
 
-**NO WARRANTY** â€” This software is provided "as is" without warranty of any kind. Use at your own risk. The authors are not responsible for any damages or losses arising from the use of this software.
+Disclaimer: this software is provided as is, without warranty of any kind. Use it at your own risk. The authors are not responsible for any damages or losses arising from its use.
 
----
+License: MIT License, copyright (c) 2026 Thy Muoyhak (HakSimpleDev).
 
-## ðŸ“„ Full License
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction, including the rights to use, copy, modify, merge, publish, distribute, sublicense, and sell copies, subject to the following conditions: the above copyright notice and this permission notice must be included in all copies or substantial portions of the Software.
 
-```
-MIT License
+THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Copyright (c) 2026 Thy Muoyhak (HakSimpleDev)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-**Additional Terms:**
-- Commercial use requires explicit permission from the author
-- Attribution must be maintained in all copies or substantial portions
-```
+Additional terms: commercial use requires explicit permission from the author, and attribution must be maintained in all copies or substantial portions.
 
 ---
 
-**Happy Building! ðŸš€**
+Happy Building!
