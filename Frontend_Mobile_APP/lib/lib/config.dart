@@ -1,13 +1,13 @@
 /// App configuration.
 ///
-/// Point the app at your backend by defining the API URL at build time:
-///   flutter run --dart-define=API_URL=https://api.minishopcambodia.store
-///
-/// Defaults to the local FastAPI backend.
+/// The default points at the deployed MiniShop backend (Render). Override it
+/// at build/run time for local development:
+///   flutter run --dart-define=API_URL=http://localhost:8000
+///   (Android emulator → http://10.0.2.2:8000)
 class AppConfig {
   static const String apiBaseUrl = String.fromEnvironment(
     'API_URL',
-    defaultValue: 'http://10.0.2.2:8000',
+    defaultValue: 'https://minishop-backend-api.onrender.com',
   );
 
   /// The storefront web URL (used for referral / "open in browser" links).

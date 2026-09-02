@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../config.dart';
 import '../models/order.dart';
@@ -11,6 +8,7 @@ import '../providers/cart_provider.dart';
 import '../providers/customer_provider.dart';
 import '../providers/shop_provider.dart';
 import '../services/order_service.dart';
+import '../widgets/aba_payment_sheet.dart';
 import 'customer_auth_screen.dart';
 import 'order_success_screen.dart';
 
@@ -36,7 +34,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   bool _submitting = false;
   String? _statusMessage;
-  bool _pollingDone = false;
 
   @override
   void initState() {
@@ -120,16 +117,42 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       );
 
       if (!mounted) return;
-      setState(() => _statusMessage = 'Open ABA Pay to complete payment…');
-      _startPolling(order, payment['transaction_id']?.toString() ?? '');
+      final transactionId = payment['transaction_id']?.toString() ?? '';
 
-      // 3. Open the checkout page in the device browser.
-      final checkoutUrl = payment['checkout_url'] as String?;
-      if (checkoutUrl != null && checkoutUrl.isNotEmpty) {
-        final uri = Uri.parse(checkoutUrl);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
+      // 3. Show the ABA QR payment bottom sheet (slides up from the bottom).
+      //    The customer scans the QR with the ABA Mobile app; the sheet
+      //    auto-polls /api/payments/aba/verify every 3 seconds.
+      final paid = await showAbaPaymentSheet(
+        context,
+        title: 'Pay with ABA Pay',
+        description: 'Scan the QR code with the ABA Mobile app '
+            'to complete your order #${order.orderNumber}.',
+        amount: order.total,
+        currency: order.currency,
+        transactionId: transactionId,
+        qrCodeUrl: payment['qr_code_url']?.toString(),
+        checkoutUrl: payment['checkout_url']?.toString(),
+        verify: () async {
+          final result = await _orderService.verifyPayment(
+            orderId: order.id,
+            transactionId: transactionId,
+          );
+          return result['verified'] == true;
+        },
+      );
+
+      if (!mounted) return;
+      if (paid) {
+        _goToSuccess(order);
+      } else {
+        setState(() => _submitting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Payment not completed — order #${order.orderNumber} is '
+                'pending. You can find it in My Orders.'),
+          ),
+        );
       }
     } on Exception catch (e) {
       if (!mounted) return;
@@ -138,47 +161,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         SnackBar(content: Text('$e'), backgroundColor: Colors.red.shade400),
       );
     }
-  }
-
-  /// Poll /api/payments/aba/verify every 3 seconds (like the web storefront).
-  void _startPolling(Order order, String transactionId) {
-    if (_pollingDone) return;
-    _pollingDone = true;
-    var attempts = 0;
-    const maxAttempts = 60; // ~3 minutes
-
-    Timer.periodic(const Duration(seconds: 3), (timer) async {
-      attempts++;
-      if (attempts >= maxAttempts) {
-        timer.cancel();
-        if (mounted) {
-          setState(() {
-            _submitting = false;
-            _statusMessage =
-                'Payment not confirmed yet. You can check My Orders.';
-          });
-        }
-        return;
-      }
-      try {
-        final result = await _orderService.verifyPayment(
-          orderId: order.id,
-          transactionId: transactionId,
-        );
-        if (!mounted) {
-          timer.cancel();
-          return;
-        }
-        if (result['verified'] == true) {
-          timer.cancel();
-          _goToSuccess(order);
-        } else {
-          setState(() => _statusMessage = 'Waiting for payment…');
-        }
-      } catch (_) {
-        // Keep polling on transient errors.
-      }
-    });
   }
 
   void _finishWithoutPayment(Order order) {
