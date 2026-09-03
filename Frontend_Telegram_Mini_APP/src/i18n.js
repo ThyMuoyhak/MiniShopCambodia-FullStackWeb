@@ -1,0 +1,103 @@
+// Mini App strings - Khmer (km) and English (en), mirroring Frontend_User.
+const km = {
+  appLoading: 'កំពុងផ្ទុក…',
+  welcomeKm: 'សូមស្វាគមន៍មកកាន់ {shop} បើកមើលផលិតផល ហើយបញ្ជាទិញបានភ្លាមៗ។',
+  welcomeEn: 'Welcome to {shop}! Browse the products and order instantly.',
+  all: 'ទាំងអស់',
+  soldOut: 'អស់ស្តុក',
+  close: 'បិទ',
+  quantity: 'ចំនួន',
+  addToCart: 'បន្ថែមទៅកន្ត្រក',
+  viewCart: 'មើលកន្ត្រក',
+  yourCart: 'កន្ត្រកទំនិញ',
+  cartEmpty: 'កន្ត្រកទទេ',
+  loggedAs: 'បានចូលជា {name} (Telegram)',
+  guestNote: 'នៅពេលបញ្ជាទិញ អ្នកនឹងចូលដោយស្វ័យប្រវត្តិតាម Telegram',
+  payWithAba: 'បង់ប្រាក់ជាមួយ ABA (KHQR)',
+  checkout: 'បញ្ជាទិញ',
+  fullName: 'ឈ្មោះពេញ',
+  phone: 'លេខទូរសព្ទ (តម្រូវ)',
+  address: 'អាសយដ្ឋាន',
+  city: 'ទីក្រុង',
+  items: 'មុខ',
+  total: 'សរុប',
+  processing: 'កំពុងដំណើរការ…',
+  loginNotice: 'ការបង់ប្រាក់ត្រូវចូលតាម Telegram។ សូមបើកកម្មវិធីនេះក្នុង Telegram (តាម bot របស់ហាង)។',
+  shopNote: '{shop} - ការបញ្ជាទិញដែលបានបង់ប្រាក់នឹងបង្ហាញក្នុងផ្ទាំងគ្រប់គ្រងហាង',
+  orderPlaced: 'ការបញ្ជាទិញជោគជ័យ',
+  payNote: 'បង់ប្រាក់ក្នុងកម្មវិធី ABA (KHQR) រួចចុចពិនិត្យ។ ហាងនឹងទទួលបានព័ត៌មានភ្លាមៗ។',
+  openAba: 'បើកតំណ ABA checkout',
+  verifyTitle: 'ពិនិត្យបន្ទាប់ពីបង់ប្រាក់',
+  txnOpt: 'លេខ Transaction (ស្រេចចិត្ត)',
+  verifyBtn: 'ខ្ញុំបានបង់ - ពិនិត្យឥឡូវ',
+  continueShopping: 'បន្តទិញទំនិញ',
+  verifiedOk: 'ការទូទាត់ត្រូវបានបញ្ជាក់',
+  cartBar: 'កន្ត្រក',
+};
+const en = {
+  appLoading: 'Loading…',
+  welcomeKm: 'Welcome to {shop}! Browse the products and order instantly.',
+  welcomeEn: 'សូមស្វាគមន៍មកកាន់ {shop} បើកមើលផលិតផល ហើយបញ្ជាទិញបានភ្លាមៗ។',
+  all: 'All',
+  soldOut: 'Sold out',
+  close: 'Close',
+  quantity: 'Quantity',
+  addToCart: 'Add to cart',
+  viewCart: 'View cart',
+  yourCart: 'Your cart',
+  cartEmpty: 'Your cart is empty.',
+  loggedAs: 'Logged in as {name} (Telegram)',
+  guestNote: 'You will auto-login with Telegram at checkout.',
+  payWithAba: 'Pay with ABA (KHQR)',
+  checkout: 'Checkout',
+  fullName: 'Full name',
+  phone: 'Phone (required)',
+  address: 'Address',
+  city: 'City',
+  items: 'items',
+  total: 'Total',
+  processing: 'Processing…',
+  loginNotice: 'Paying requires Telegram auto-login. Open this Mini App inside Telegram (via the shop bot).',
+  shopNote: '{shop} - paid orders are confirmed and shown in the shop dashboard.',
+  orderPlaced: 'Order placed',
+  payNote: 'Pay inside the ABA app (KHQR), then press Verify. The shop dashboard and Telegram will show your paid order automatically.',
+  openAba: 'Open ABA checkout link',
+  verifyTitle: 'Verify after paying',
+  txnOpt: 'Transaction ID (optional)',
+  verifyBtn: 'I paid - verify now',
+  continueShopping: 'Continue shopping',
+  verifiedOk: 'Payment confirmed',
+  cartBar: 'Cart',
+};
+Object.assign(km, {
+  customerInfo: 'ព័ត៌មានអតិថិជន',
+  chooseVariant: 'ជ្រើសរើសពូជ / ទំហំ',
+  available: 'មានស្តុក',
+  details: 'ព័ត៌មានលម្អិត',
+  save: 'សន្សំ {pct}%',
+  aboutShop: 'អំពីហាង',
+  shopInfo: 'ព័ត៌មានហាង',
+  openShop: 'បើកហាង',
+  bio: 'អំពីហាង',
+});
+Object.assign(en, {
+  customerInfo: 'Customer info',
+  chooseVariant: 'Choose variant',
+  available: 'Available',
+  details: 'Details',
+  save: 'Save {pct}%',
+  aboutShop: 'About this shop',
+  shopInfo: 'Shop info',
+  openShop: 'Open shop',
+  bio: 'About',
+});
+const maps = { km, en };
+export const tr = (lang, key, vars) => {
+  let s = (maps[lang] || en)[key] ?? maps.en[key] ?? key;
+  if (vars) {
+    Object.keys(vars).forEach((k) => {
+      s = s.replace(new RegExp(`\\{${k}\\}`, 'g'), vars[k]);
+    });
+  }
+  return s;
+};

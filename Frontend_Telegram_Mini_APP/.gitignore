@@ -1,0 +1,11 @@
+# Dependencies & build
+node_modules/
+build/
+
+# Local env (contains your machine-specific API URL) - template is .env.example
+.env.local
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db

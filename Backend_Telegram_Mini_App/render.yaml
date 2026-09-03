@@ -1,0 +1,18 @@
+# Render.com background worker - deploy this file as a service (Render -> New + ->
+# Background Worker -> connect this repo/folder). Runs 24/7 and answers every
+# shop bot's /start automatically.
+services:
+  - type: worker
+    name: minishop-telegram-bot-worker
+    runtime: python
+    plan: starter   # background workers need a paid plan (no free tier)
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot_worker.py
+    healthCheckPath: ""
+    envVars:
+      - key: MINI_BACKEND_BASE_URL
+        value: http://localhost:8000
+      - key: MINI_BOT_SERVICE_KEY
+        sync: false   # set this secret in the Render dashboard (same as BOT_SERVICE_KEY on the main API)
+      - key: LOOP_SECONDS
+        value: "2"

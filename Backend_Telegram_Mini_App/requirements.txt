@@ -1,0 +1,2 @@
+# Backend_Telegram_Mini_App - background bot worker
+httpx>=0.24,<1
