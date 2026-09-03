@@ -3,6 +3,7 @@
 A complete multi-tenant e-commerce platform where every shop gets its own storefront, dashboard, POS, ABA Pay (KHQR) checkout, PDF invoices, Telegram notifications, and reseller commissions.
 
 Built with FastAPI + React (5 web apps) + Flutter (mobile app), and a free 1-month Starter plan for new shops.
+Two LOCAL-ONLY Telegram add-ons are also included for learning: Frontend_Telegram_Mini_APP (a storefront that opens inside Telegram) and Backend_Telegram_Mini_App (a 24/7 background bot worker).
 
 IMPORTANT: This repository is 100% code. All data, databases, uploads, backups and production secrets have been removed so you can safely clone it, study it, and build your own project. Everything runs locally with localhost defaults and demo seed accounts only.
 
@@ -29,6 +30,9 @@ IMPORTANT: This repository is 100% code. All data, databases, uploads, backups a
 17. Suggested Roadmap
 18. Contributing
 19. Disclaimer and Full License
+20. Telegram Mini App (Frontend_Telegram_Mini_APP)
+21. Telegram Background Bot Worker (Backend_Telegram_Mini_App)
+22. Local-Only Copies, Data Privacy and Security
 
 ---
 
@@ -129,6 +133,8 @@ This project is designed for development and learning. Before deploying to produ
 | Dark / Light mode | Every shop storefront supports both themes |
 | Mobile app | Flutter storefront (Frontend_Mobile_APP): browse shops, cart, checkout, ABA Pay, customer login |
 | Dashboards | Admin (6 charts), shop owner, and reseller dashboards with real data |
+| Telegram Mini App | In-Telegram storefront: banner, categories, product detail, cart, ABA Pay checkout, auto-login |
+| Auto shop bots | 24/7 bot worker replies /start with the full shop About and an Open Shop button (?shop=username) |
 
 ---
 
@@ -143,6 +149,8 @@ This project is designed for development and learning. Before deploying to produ
 | Payments | ABA Pay (KHQR) via the PayWay gateway (sandbox and live) |
 | PDF | reportlab plus optional headless Edge/Chromium for high-quality HTML invoices |
 | Deploy | Render / Railway / VPS (backend), Netlify / Vercel (frontends) |
+| Telegram Mini App | React (CRA) WebApp storefront that runs inside Telegram (Frontend_Telegram_Mini_APP) |
+| Bot worker | Python 24/7 polling worker for shop bots (Backend_Telegram_Mini_App) |
 
 ---
 
@@ -620,6 +628,17 @@ MiniShopCambodia-FullStackWeb
     |                           Checkout, OrderSuccess, MyOrders, Auth,
     |                           Profile, CreateShop
     |-- lib/widgets/            ProductCard, CategoryChip, ShopHeader, QtyStepper
+|
+|-- Frontend_Telegram_Mini_APP/  Telegram Mini App storefront (React, port 3006)
+|   |-- src/App.js             Shop load, blur loading, sticky categories, cart, checkout
+|   |-- src/Sheets.js          ProductSheet (full detail), CartSheet, Checkout, Success
+|   |-- src/telegram.js        Telegram WebApp helpers (init, initData, start_param)
+|   |-- src/api.js             API client (talks to Backend_API)
+|
+|-- Backend_Telegram_Mini_App/  24/7 background bot worker (Python)
+    |-- bot_worker.py          getUpdates polling, shop welcome, guided bot flows
+    |-- render.yaml            Render worker service template
+    |-- requirements.txt       httpx
 ```
 
 ---
@@ -955,129 +974,115 @@ Additional terms: commercial use requires explicit permission from the author, a
 
 Happy Building!
 
+---
 
-=====================================================================
-TELEGRAM MINI APP + BOT WORKER  (public study copy - local only)
-=====================================================================
+## 20. Telegram Mini App (Frontend_Telegram_Mini_APP)
 
-This repository also contains two extra projects for learning:
+A React storefront that runs INSIDE Telegram as a Mini App / WebApp. Customers open
+it from a shop bot (Start, then the Open Shop button) and can browse and pay without
+leaving Telegram. In a normal browser it also works with `?shop=<username>`.
 
-  Frontend_Telegram_Mini_APP/     React Telegram Mini App storefront
-  Backend_Telegram_Mini_App/      Python background bot worker
+What it shows (same data as the web storefront):
+- Blur loading screen while the shop data loads.
+- Shop header: logo, shop name, @username, dark/light and KH/EN toggles in one row.
+- Sticky category chips including the All chip, product grid with SALE badges.
+- Product detail loaded from the FULL public product endpoint: image gallery,
+  complete description, sale %, real stock, variants (size/colour with SKU, price,
+  quantity), custom attributes with selectable option chips, quantity stepper.
+- Cart with variant-aware lines, checkout with Telegram auto-login, and ABA Pay
+  (KHQR) payment + verify.
 
-Both are LOCAL-ONLY study copies. They contain NO live bot token, NO
-hosted API URL and NO shared secret. When you run them you must point
-them at YOUR OWN local backend (http://localhost:8000) and create your
-own secret keys. See the Security notes at the end of this section.
+How the right shop is chosen (important):
+- The app reads `?shop=<username>` from the URL, or the Telegram `start_param`.
+- Every Open Shop button built by the worker or the Dashboard menu button appends
+  `?shop=<the shop username>`, so ONE shared Mini App URL serves MANY shops and
+  never falls back to the demo shop by accident.
 
+Run it locally (browser test works):
+```
+cd Frontend_Telegram_Mini_APP
+npm install
+echo REACT_APP_API_URL=http://localhost:8000 > .env.local
+npm start          # http://localhost:3006
+open http://localhost:3006/?shop=demo
+```
+Inside Telegram the app auto-logins the customer with initData verified by the
+Backend_API shop bot.
 
-1) WHAT THESE TWO PROJECTS DO
------------------------------
-- Frontend_Telegram_Mini_APP is the storefront that opens INSIDE
-  Telegram (Mini App / WebApp). It loads a shop, shows its banner,
-  categories, products with prices/stock/variations, a cart and ABA
-  Pay (KHQR) checkout. The shop shown comes from ?shop=<username> or
-  the Telegram start_param, so ONE Mini App URL can serve MANY shops.
+---
 
-- Backend_Telegram_Mini_App is a worker that polls Telegram
-  getUpdates 24/7 for every shop bot that an owner connected in the
-  Backend_API Dashboard. When a customer presses /start the worker
-  auto-replies with the shop banner, the FULL shop About
-  (name, bio, description, contact) and an Open Shop button that opens
-  the Mini App for that exact shop.
+## 21. Telegram Background Bot Worker (Backend_Telegram_Mini_App)
 
-  The worker also used to run a platform payment bot flow
-  (Start -> Profile ID -> Secret Key) for linking chats that receive
-  full payment-success alerts. In this public copy the flow code is
-  included for study, but the secrets and the live bot are not.
+A small Python service that polls Telegram `getUpdates` 24/7 for EVERY shop bot an
+owner connected in the Dashboard (Backend_API -> Telegram Mini App page). It is a
+companion to the Mini App - no webhooks are needed for the shop bots.
 
+What it does:
+- On `/start`, `/menu`, `/help` or any private message it auto-replies with:
+  banner/logo photo, shop name, bio, FULL description, contact, and an
+  Open Shop button that opens the Mini App with `?shop=<that shop>`.
+- Handles `my_chat_member` events (bot added to a group -> posts the guide).
+- Logs a heartbeat every 60s so you can confirm it is alive.
 
-2) ARCHITECTURE OVERVIEW
-------------------------
-  Backend_API (FastAPI)  <-- REST /api/* -->  every frontend
-      ^        ^
-      |        +-- worker reads shop-bot list from /api/bot-service/config
-      |                    (protected by BOT_SERVICE_KEY header)
-      +-- mini app /api/shops/{username}/mini, products, orders, payments
+How it gets the shop list:
+- It reads `GET /api/bot-service/config` from the Backend_API (protected by the
+  `X-Bot-Service-Key` header, which must match `BOT_SERVICE_KEY`).
+- The worker does NOT hard-code any bot token - tokens always come from the API.
 
-  Telegram bots can be served in two ways:
-    a) webhook  : Telegram POSTs each update to Backend_API
-                  (used by the always-on payment bot in the live system)
-    b) polling  : this worker calls getUpdates for each shop bot
-                  (Telegram forbids webhook + polling on the SAME bot
-                   at the same time - the worker deletes webhooks first)
+Why polling instead of webhooks:
+- Telegram forbids webhook + getUpdates on the same bot at the same time.
+- The worker polls shop bots, and the always-on Backend_API may serve the platform
+  payment bot via webhook - the two never overlap because each bot is owned by
+  exactly one mode.
 
+Run it locally (needs a real bot token from @BotFather for the full experience):
+```
+cd Backend_Telegram_Mini_App
+python -m venv venv && venv\Scripts\activate
+pip install -r requirements.txt
 
-3) ZERO-TO-RUN (full stack, local machine)
-------------------------------------------
-Prerequisites: Python 3.10+, Node 18+, Git. Flutter is optional.
+# Backend_API .env (edit Backend_API/.env):
+#   BOT_SERVICE_KEY=your-own-long-secret
+#   BOT_SERVICE_ENABLED=true
 
-Step 1 - Backend
-  cd Backend_API
-  python -m venv venv
-  venv\Scripts\activate            (Windows)  /  source venv/bin/activate
-  pip install -r requirements.txt
-  python -m uvicorn main:app --reload --port 8000
-  -> http://localhost:8000  (SQLite DB is created automatically)
+# worker .env (create Backend_Telegram_Mini_App/.env):
+#   MINI_BACKEND_BASE_URL=http://localhost:8000
+#   MINI_BOT_SERVICE_KEY=your-own-long-secret
+python bot_worker.py
+```
+Connect a shop bot in the Dashboard (Frontend_Dashboard_User -> Telegram Mini App):
+1. paste the bot token and @username from @BotFather and press Check & Save Bot;
+2. save the Mini App URL and press Set bot menu button;
+3. press Start on the bot in Telegram - the worker answers with the shop About and
+   an Open Shop button for that exact shop.
 
-Step 2 - Admin + user dashboards (each in its own terminal)
-  cd Frontend_Admin              -> npm install && npm start   (:3000)
-  cd Frontend_User               -> npm install && npm start   (:3001)
-  cd Frontend_Dashboard_User     -> npm install && npm start   (:3002)
-  cd Frontend_Reseller           -> npm install && npm start   (:3003)
+---
 
-Step 3 - Telegram Mini App (browser test works too)
-  cd Frontend_Telegram_Mini_APP
-  npm install
-  echo REACT_APP_API_URL=http://localhost:8000 > .env.local
-  npm start                                   -> http://localhost:3006
-  open http://localhost:3006/?shop=demo       (or your shop username)
+## 22. Local-Only Copies, Data Privacy and Security
 
-Step 4 - Bot worker (optional, needs a real Telegram bot from @BotFather)
-  cd Backend_Telegram_Mini_App
-  python -m venv venv && venv\Scripts\activate
-  pip install -r requirements.txt
-  # Create your own secret (no default ships in this public copy):
-  #   Backend_API .env : BOT_SERVICE_KEY=<your-secret>
-  #                     BOT_SERVICE_ENABLED=true
-  #   worker   .env    : MINI_BACKEND_BASE_URL=http://localhost:8000
-  #                     MINI_BOT_SERVICE_KEY=<your-secret>
-  python bot_worker.py
+IMPORTANT - this repository is shared so other developers can clone it and learn.
+For that reason the two Telegram add-ons above are LOCAL-ONLY study copies:
 
-Step 5 - Connect a shop bot in the Dashboard
-  Frontend_Dashboard_User -> Telegram Mini App:
-    1. paste the bot token + @username from @BotFather, Check & Save Bot
-    2. set the Mini App URL (your deployed or local mini app)
-    3. press Set bot menu button
-  Then press /start on the bot: the worker replies with the shop About
-  and an Open Shop button that opens the Mini App with ?shop=<username>.
+- No live bot token is included anywhere.
+- No hosted (onrender.com / live) API URL is included: code defaults point to
+  `http://localhost:8000` (see src/api.js, netlify.toml, bot_worker.py,
+  render.yaml, .env.example).
+- No shared/default worker secret is included: you MUST create your own
+  `MINI_BOT_SERVICE_KEY` / `BOT_SERVICE_KEY` pair. The public copy contains no
+  fallback secret value.
+- No `.env.local`, no database, no uploads, no backups and no real user data are
+  committed. `.gitignore` rules keep secrets and build artifacts out of Git.
 
-NOTE on the Open Shop button: the button URL always carries ?shop=<the
-shop username>. That is what makes one shared Mini App show the right
-shop - never open the bare Mini App URL in production without a shop.
+Rules for contributors (keep it that way):
+- Never add a real bot token, API secret, password, or hosted URL to this repo.
+- Always override defaults through environment variables (`.env` files are ignored).
+- If you commit a change, verify it still runs against a local backend only.
 
-
-4) ABA PAY (payment)
---------------------
-The platform integrates ABA Pay KHQR (Cambodia). In live use the owner
-adds ABA profile ID + secret in the Dashboard. For learning, the
-sandbox/test endpoints let you simulate a successful payment without
-real money. Never commit ABA or Telegram secrets.
-
-
-5) SECURITY NOTES (important)
------------------------------
-- This public repository contains study copies only. Real bot tokens,
-  ABA secrets, database files and hosted URLs live on YOUR private
-  machine/accounts and must never be committed here.
-- In Backend_Telegram_Mini_App there is NO default service key: create
-  your own MINI_BOT_SERVICE_KEY / BOT_SERVICE_KEY pair and keep it out
-  of Git (use .env files which are git-ignored).
-- In Frontend_Telegram_Mini_APP there is no .env.local committed; the
-  code defaults to http://localhost:8000. Override with your own
-  REACT_APP_API_URL / REACT_APP_MEDIA_URL when deploying.
-- Telegram tokens are passwords: anyone who holds a bot token can send
-  messages as your bot. Rotate tokens in @BotFather if they are ever
-  exposed.
+Security reminders for your OWN deployment (never in this repo):
+- Telegram tokens are passwords - rotate them in @BotFather if they are exposed.
+- Put `BOT_SERVICE_KEY` (Backend_API) and `MINI_BOT_SERVICE_KEY` (worker) in your
+  server environment with a long random value, and make both match.
+- When you deploy the Mini App, set `REACT_APP_API_URL` / `REACT_APP_MEDIA_URL` to
+  your own backend and keep them out of Git.
 
 Happy learning!
