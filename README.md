@@ -156,20 +156,26 @@ This project is designed for development and learning. Before deploying to produ
 
 ## 7. Architecture
 
-Four web frontends plus one mobile app all talk to one FastAPI backend:
+Five web apps (storefront, admin, shop dashboard, reseller, Telegram Mini App)
+plus a Flutter mobile app and a background bot worker all talk to one FastAPI backend:
 
 ```
-Frontend_User            :3000   Storefront and self-serve signup
-Frontend_Admin           :3001   Platform admin panel
-Frontend_Dashboard_User  :3002   Shop owner dashboard
-Frontend_Reseller        :3005   Reseller dashboard
-Frontend_Mobile_APP             Flutter storefront (Android / iOS)
+Frontend_User                :3000   Storefront and self-serve signup
+Frontend_Admin               :3001   Platform admin panel
+Frontend_Dashboard_User      :3002   Shop owner dashboard
+Frontend_Reseller            :3005   Reseller dashboard
+Frontend_Telegram_Mini_APP   :3006   In-Telegram storefront (Mini App / WebApp)
+Frontend_Mobile_APP                  Flutter storefront (Android / iOS)
 
 All of the above  -->  FastAPI Backend (uvicorn :8000)
                          |--- Database (SQLite dev / PostgreSQL prod)
                          |--- Uploads (images, QR codes, receipts)
                          |--- ABA Pay / KHQR (PayWay gateway)
-                         |--- Telegram Bot
+                         |--- Telegram Bot (webhook for the platform payment bot)
+
+Backend_Telegram_Mini_App (worker) --> FastAPI Backend
+   polls GET /api/bot-service/config for every connected shop bot,
+   answers /start with the full shop About and an Open Shop button.
 ```
 
 The backend is organized into routers (endpoints by domain) and services (business logic: ABA, invoice/PDF, QR, stock, backup, Telegram).
@@ -181,7 +187,9 @@ graph TB
         FA[Frontend_Admin<br/>platform admin<br/>:3001]
         FD[Frontend_Dashboard_User<br/>shop owner dashboard<br/>:3002]
         FR[Frontend_Reseller<br/>reseller dashboard<br/>:3005]
+        FG[Frontend_Telegram_Mini_APP<br/>in-Telegram storefront<br/>:3006]
         FM[Frontend_Mobile_APP<br/>Flutter storefront]
+        BW[Backend_Telegram_Mini_App<br/>bot worker - getUpdates polling]
     end
     API[FastAPI Backend<br/>uvicorn :8000<br/>routers and services]
     DB[(Database<br/>SQLite dev / PostgreSQL prod)]
@@ -194,11 +202,14 @@ graph TB
     FD --> API
     FR --> API
     FM --> API
+    FG --> API
+    BW --> API
 
     API --> DB
     API --> UP
     API --> ABA
     API --> TG
+    API -. config JSON .-> BW
 
     ABA -. payment webhook .-> API
 ```
@@ -247,6 +258,44 @@ id, shop_id, telegram_id, code_hash, expires_at (used for Telegram login codes).
 - A Product appears in many OrderItems.
 - An Order contains many OrderItems.
 - A Customer places many Orders.
+
+### Telegram Mini App data usage (Frontend_Telegram_Mini_APP)
+The Mini App keeps no database of its own. It only reads the public REST API of
+the shop it opens (?shop=<username> or the Telegram start_param):
+- GET /api/shops/{username}/mini  -> shop identity, banner/logo, theme colors and
+  the owner welcome texts (telegram_settings mini_welcome_*).
+- GET /api/categories/public?shop_id=...   -> categories.
+- GET /api/products/public?shop_id=...     -> products (price, sale_price, stock).
+- GET /api/products/{id}/public            -> FULL detail: images[], variations[]
+  (attrs, price, quantity, sku), custom_attributes[], description.
+- POST /api/orders and /api/payments/aba/create | /api/payments/aba/verify
+  -> checkout and ABA Pay (KHQR) payment.
+The shop that is shown is NEVER hard-coded: the Open Shop buttons built by the
+worker and the Dashboard menu button append ?shop=<username>.
+
+### Backend_Telegram_Mini_App (worker) data usage
+The worker keeps no database either. Every cycle it calls
+GET /api/bot-service/config with the X-Bot-Service-Key header. The API returns
+one object per shop that has telegram_settings.bot_token set, plus the platform
+payment bot built from the TELEGRAM_BOT_TOKEN environment variable. Per shop the
+worker uses these fields:
+- bot_token / bot_username   : the shop bot it polls with getUpdates.
+- username                   : appended to the Mini App URL as ?shop=<username>.
+- mini_app_url               : base URL of the Open Shop button.
+- banner / logo              : the photo sent first on /start.
+- shop_name, bio, description, contact : the full About reply text.
+- welcome_km / welcome_en    : owner caption for the photo message.
+
+### telegram_settings JSON stored per Shop - the key fields used by Telegram
+- bot_token, bot_username       : the owner's shop bot (polled by the worker).
+- profile_id, secret_key        : "Profile ID" + "Secret Key" shown in the
+  Dashboard; proving the owner owns the shop when linking payment alerts.
+- linked_chats                  : chat ids that receive shop-bot notifications.
+- payment_links                 : [{chat_id, bot_token}] chats linked through the
+  payment bot which receive FULL payment-success alerts (sent only on success).
+- enabled                       : master switch for Telegram notifications.
+- mini_app_url, mini_banner, mini_welcome_km, mini_welcome_en : Mini App content
+  (shared across the web, the Mini App, and the bot replies).
 
 ```mermaid
 erDiagram
